@@ -10,10 +10,7 @@ const RIGHT = Vector2(1, 0)
 var speed = 0
 const MAX_SPEED = 400
 
-func _ready():
-	pass
-
-func _fixed_process(delta):
+func _physics_process(delta):
 	var is_moving = Input.is_action_pressed("ui_up") or Input.is_action_pressed("ui_down") or Input.is_action_pressed("ui_left") or Input.is_action_pressed("ui_right")
 	direction = Vector2()
 	

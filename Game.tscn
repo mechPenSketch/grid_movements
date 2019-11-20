@@ -1,20 +1,38 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Player.gd" type="Script" id=1]
-[ext_resource path="res://player.png" type="Texture" id=2]
+[ext_resource path="res://Grid.gd" type="Script" id=1]
+[ext_resource path="res://GridVisualizer.gd" type="Script" id=2]
+[ext_resource path="res://Player.gd" type="Script" id=3]
+[ext_resource path="res://player.png" type="Texture" id=4]
+[ext_resource path="res://Obstacle.tscn" type="PackedScene" id=5]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 16, 16 )
+extents = Vector2( 32, 32 )
 
 [node name="Game" type="Node2D"]
 
-[node name="Grid" type="Node2D" parent="."]
-
-[node name="Player" type="KinematicBody2D" parent="Grid"]
+[node name="Grid" type="TileMap" parent="."]
+format = 1
 script = ExtResource( 1 )
 
+[node name="GridVisualizer" type="Node2D" parent="Grid"]
+script = ExtResource( 2 )
+
+[node name="Player" type="KinematicBody2D" parent="Grid"]
+position = Vector2( 529, 283 )
+script = ExtResource( 3 )
+
 [node name="Sprite" type="Sprite" parent="Grid/Player"]
-texture = ExtResource( 2 )
+texture = ExtResource( 4 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Grid/Player"]
 shape = SubResource( 1 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="Obstacle" parent="Grid" instance=ExtResource( 5 )]
+visible = false
