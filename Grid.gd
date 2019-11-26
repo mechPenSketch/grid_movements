@@ -18,6 +18,10 @@ func _ready():
 		for y in range(grid_size.y):
 			grid[x].append(null)
 	
+	var Player = get_node("Player")
+	var start_pos = update_child_pos(Player)
+	Player.set_position(start_pos)
+	
 	# Create Obstacles
 	var positions = []
 	for n in range(5):
