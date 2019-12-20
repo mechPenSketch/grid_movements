@@ -1,12 +1,12 @@
-extends KinematicBody2D
+extends Node2D
 
 var direction = Vector2()
+const DEG_UP = 0
+const DEG_RIGHT = 90
+const DEG_DOWN = 180
+const DEG_LEFT = 270
 
-var type
 var grid
-
-var speed = 0
-const MAX_SPEED = 400
 
 var is_moving = false
 var tween
@@ -14,7 +14,6 @@ var target_pos = Vector2()
 
 func _ready():
 	grid = get_parent()
-	type = grid.ENTITY_TYPES.PLAYER
 	
 	tween = $Tween
 	tween.connect_into(self)
@@ -31,15 +30,27 @@ func _physics_process(delta):
 		direction.x -= 1
 	elif Input.is_action_pressed("ui_right"):
 		direction.x += 1
-		
-	speed = 0 if direction == Vector2() else MAX_SPEED
 	
 	if !is_moving and direction != Vector2():
-		target_pos = get_position() + direction * grid.tile_size
+		
+		turn(direction)
+		
+		target_pos = get_position() + direction * grid.get_cell_size()
 		tween.move_char(self, target_pos)
 		is_moving = true
 	pass
 	
 func _on_tween_completed(o, k):
 	is_moving = false
+	pass
+	
+func turn(dir:Vector2):
+	if dir.y < 0:
+		$Position2D.rotation_degrees = DEG_UP
+	elif dir.x < 0:
+		$Position2D.rotation_degrees = DEG_LEFT
+	elif dir.x > 0:
+		$Position2D.rotation_degrees = DEG_RIGHT
+	else:
+		$Position2D.rotation_degrees = DEG_DOWN
 	pass
