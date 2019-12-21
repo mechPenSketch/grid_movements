@@ -15,6 +15,9 @@ var target_pos = Vector2()
 func _ready():
 	grid = get_parent()
 	
+	connect("area_entered", self, "_on_area_entered")
+	connect("area_exited", self, "_on_area_exited")
+	
 	tween = $Tween
 	tween.connect_into(self)
 	pass
@@ -42,6 +45,14 @@ func _physics_process(delta):
 	
 func _on_tween_completed(o, k):
 	is_moving = false
+	pass
+
+func _on_area_entered(a):
+	print("entered")
+	pass
+
+func _on_area_exited(a):
+	print("exited")
 	pass
 	
 func turn(dir:Vector2):
