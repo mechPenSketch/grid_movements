@@ -1,4 +1,4 @@
-extends Node2D
+extends Area2D
 
 var direction = Vector2()
 const DEG_UP = 0
@@ -11,15 +11,20 @@ var grid
 var is_moving = false
 var tween
 var target_pos = Vector2()
+var blocks = []
+var is_blocked:bool = false
+export (NodePath) var rayU
+export (NodePath) var rayD
+export (NodePath) var rayL
+export (NodePath) var rayR
+var raycast
 
 func _ready():
 	grid = get_parent()
 	
-	connect("area_entered", self, "_on_area_entered")
-	connect("area_exited", self, "_on_area_exited")
-	
 	tween = $Tween
 	tween.connect_into(self)
+	turn(Vector2(0,1))
 	pass
 
 func _physics_process(delta):
@@ -38,9 +43,10 @@ func _physics_process(delta):
 		
 		turn(direction)
 		
-		target_pos = get_position() + direction * grid.get_cell_size()
-		tween.move_char(self, target_pos)
-		is_moving = true
+		if !raycast.is_colliding():
+			target_pos = get_position() + direction * grid.get_cell_size()
+			tween.move_char(self, target_pos)
+			is_moving = true
 	pass
 	
 func _on_tween_completed(o, k):
@@ -48,20 +54,24 @@ func _on_tween_completed(o, k):
 	pass
 
 func _on_area_entered(a):
-	print("entered")
+	if a.get_parent() != $Position2D:
+		print(a)
+		blocks.append(a)
+		is_blocked = true
 	pass
 
 func _on_area_exited(a):
-	print("exited")
+	blocks.erase(a)
+	is_blocked = blocks.size()
 	pass
 	
 func turn(dir:Vector2):
 	if dir.y < 0:
-		$Position2D.rotation_degrees = DEG_UP
+		raycast=get_node(rayU)
 	elif dir.x < 0:
-		$Position2D.rotation_degrees = DEG_LEFT
+		raycast=get_node(rayL)
 	elif dir.x > 0:
-		$Position2D.rotation_degrees = DEG_RIGHT
+		raycast=get_node(rayR)
 	else:
-		$Position2D.rotation_degrees = DEG_DOWN
+		raycast=get_node(rayD)
 	pass
