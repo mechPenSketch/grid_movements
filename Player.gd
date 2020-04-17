@@ -18,6 +18,8 @@ export (NodePath) var rayD
 export (NodePath) var rayL
 export (NodePath) var rayR
 var raycast
+export (Resource) var incoming
+signal incoming_gone
 
 func _ready():
 	grid = get_parent()
@@ -45,12 +47,20 @@ func _physics_process(delta):
 		
 		if !raycast.is_colliding():
 			target_pos = get_position() + direction * grid.get_cell_size()
+			
+			# ADD INCOMING BLOCK
+			var new_incoming = incoming.instance()
+			new_incoming.set_position(target_pos)
+			grid.add_child(new_incoming)
+			connect("incoming_gone", new_incoming, "queue_free")
+			
 			tween.move_char(self, target_pos)
 			is_moving = true
 	pass
 	
 func _on_tween_completed(o, k):
 	is_moving = false
+	emit_signal("incoming_gone")
 	pass
 
 func _on_area_entered(a):

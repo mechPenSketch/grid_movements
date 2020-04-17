@@ -9,14 +9,14 @@ Godot Engine v3.x
 After downloading, open Godot Engine Project Manager. Click Import, go to the folder you've downloaded, and select "project.godot".
 
 ## Usage
-The scene contains a player (green) and an obstacle (orange). The player can move in any direction, using arrow keys. However, the player cannot move into the obstacle.
+The scene contains a player (green) and an obstacle (orange). The player can move in any direction, using arrow keys. The obstacle blocks the player's way.
 
 ## Potential Updates
-Following this release, there are more thing I want to add onto this asset, including:
+Following this release, there are more things I want to add onto this asset, including:
+### Minor Additions
 * Using tool mode to bind TileMap's cell size into Grid Step for snapping.
-* Fixing a potential oversight where two moving characters could walk into the same spot.
 
-## Acknowledgment
+## Author
 * mechPenSketch
 
 ## License
