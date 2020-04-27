@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/obstacle.png-dfb3e99d3af573251007cdf5e1c252b9.stex"
+path="res://.import/base_tile.png-4caee36d1e0bca09c6f2074b71e72e6a.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://obstacle.png"
-dest_files=[ "res://.import/obstacle.png-dfb3e99d3af573251007cdf5e1c252b9.stex" ]
+source_file="res://Map/base_tile.png"
+dest_files=[ "res://.import/base_tile.png-4caee36d1e0bca09c6f2074b71e72e6a.stex" ]
 
 [params]
 

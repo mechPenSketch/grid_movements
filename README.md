@@ -11,10 +11,14 @@ After downloading, open Godot Engine Project Manager. Click Import, go to the fo
 ## Usage
 The scene contains a player (green) and an obstacle (orange). The player can move in any direction, using arrow keys. The obstacle blocks the player's way.
 
+The main TileMap (with MainMap.gd attached) can have its cell size adjusted such that the grid step for snapping will also be automatically update.
+
 ## Potential Updates
 Following this release, there are more things I want to add onto this asset, including:
+### Major Additions
+* Events
 ### Minor Additions
-* Using tool mode to bind TileMap's cell size into Grid Step for snapping.
+* Expanding sprite to have animation.
 
 ## Author
 * mechPenSketch
