@@ -13,13 +13,6 @@ The scene contains a player (green) and an obstacle (orange). The player can mov
 
 The main TileMap (with MainMap.gd attached) can have its cell size adjusted such that the grid step for snapping will also be automatically update.
 
-## Potential Updates
-Following this release, there are more things I want to add onto this asset, including:
-### Major Additions
-* Events
-### Minor Additions
-* Expanding sprite to have animation.
-
 ## Author
 * mechPenSketch
 
