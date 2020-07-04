@@ -19,6 +19,10 @@ config/name="Grid Movement"
 run/main_scene="res://Game.tscn"
 config/icon="res://icon.png"
 
+[editor_plugins]
+
+enabled=PoolStringArray( "snap_map" )
+
 [rendering]
 
 environment/default_environment="res://default_env.tres"
