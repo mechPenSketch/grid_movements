@@ -8,9 +8,14 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "TileMap",
+"class": "SnapboundTiles",
+"language": "GDScript",
+"path": "res://Map/MainMap.gd"
+} ]
 _global_script_class_icons={
-
+"SnapboundTiles": ""
 }
 
 [application]
