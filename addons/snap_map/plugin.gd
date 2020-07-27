@@ -5,6 +5,7 @@ var affected_classes = ["SnapboundTiles"]
 var current_node = null
 
 # CANVAS SNAP SETTINGS
+var save_file
 var snap_spinbox
 var snap_offset_x
 var snap_offset_y
@@ -18,8 +19,11 @@ func _enter_tree():
 	# 	Add the new type with a name, a parent type, a script and an icon
 	#eg: add_custom_type("My Button", "Button", preload("my_button.gd"), preload("icon.png"))
 	
-	#		DEFINE SNAP SETTINGS
+	# DEFINE SNAP SETTINGS
 	set_snap_settings()
+	
+	# LOAD SNAP SETTINGS
+	load_plugin()
 	pass
 
 
@@ -93,6 +97,10 @@ func handles(node):
 		current_node = null
 	return affected_classes.has(node.get_class())
 
+func load_plugin():
+	save_file = load("plugin_save.tres")
+	snap_ratio = save_file.get_snap_ratio()
+
 func recursive_get_children(node):
 	var children = node.get_children()
 	if children.size() == 0:
@@ -101,6 +109,13 @@ func recursive_get_children(node):
 		for child in children:
 			children += recursive_get_children(child)
 		return children
+
+func save_plugin():
+	save_file.set_snap_ratio(snap_ratio)
+
+# ON SCENE BEING CHANGED
+func scene_changed():
+	print("Scene is changed")
 
 func set_nodes_params(node, param, val):
 	if affected_classes.has(node.get_class()):
