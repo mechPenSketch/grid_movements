@@ -7,7 +7,7 @@
 [ext_resource path="res://Map/Obstacle.tscn" type="PackedScene" id=5]
 [ext_resource path="res://Map/TileBlockShape.tres" type="Shape2D" id=6]
 [ext_resource path="res://Character/Incoming.tscn" type="PackedScene" id=7]
-[ext_resource path="res://Map/MainMap.gd" type="Script" id=8]
+[ext_resource path="res://addons/snap_map/classes/snapbound_tiles.gd" type="Script" id=8]
 
 [sub_resource type="TileSet" id=1]
 0/name = "basic.png 0"

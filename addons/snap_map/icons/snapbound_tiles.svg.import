@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/snappable_tiles.svg-f3e56fb25fb8307061d35eeb922a3749.stex"
+path="res://.import/snapbound_tiles.svg-7ffa44a3f5ffa57cc2d747f27cc77705.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/snap_map/icons/snappable_tiles.svg"
-dest_files=[ "res://.import/snappable_tiles.svg-f3e56fb25fb8307061d35eeb922a3749.stex" ]
+source_file="res://addons/snap_map/icons/snapbound_tiles.svg"
+dest_files=[ "res://.import/snapbound_tiles.svg-7ffa44a3f5ffa57cc2d747f27cc77705.stex" ]
 
 [params]
 

@@ -18,6 +18,7 @@ func _enter_tree():
 	
 	# 	Add the new type with a name, a parent type, a script and an icon
 	#eg: add_custom_type("My Button", "Button", preload("my_button.gd"), preload("icon.png"))
+	add_custom_type("Snapbound Tiles", "TileMap", preload("classes/snapbound_tiles.gd"), preload("icons/snapbound_tiles.svg"))
 	
 	# DEFINE SNAP SETTINGS
 	set_snap_settings()

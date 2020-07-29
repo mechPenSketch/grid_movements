@@ -13,15 +13,9 @@ _global_script_classes=[ {
 "class": "PluginSave",
 "language": "GDScript",
 "path": "res://addons/snap_map/plugin_save.gd"
-}, {
-"base": "TileMap",
-"class": "SnapboundTiles",
-"language": "GDScript",
-"path": "res://Map/MainMap.gd"
 } ]
 _global_script_class_icons={
-"PluginSave": "",
-"SnapboundTiles": ""
+"PluginSave": ""
 }
 
 [application]
