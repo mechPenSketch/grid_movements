@@ -1,5 +1,13 @@
+tool
 extends Area2D
 
+# SNAP SETTINGS
+enum AspectRatio {NONE, SQUARE, KEEP}
+export(int, 64) var cell_width setget set_cell_width
+export(AspectRatio) var aspect_ratio setget set_aspect_ratio
+export(int, 64) var cell_height setget set_cell_height
+
+# INDIVIDUAL PARAMETERS
 var direction = Vector2()
 const DEG_UP = 0
 const DEG_RIGHT = 90
@@ -22,11 +30,12 @@ export (Resource) var incoming
 signal incoming_gone
 
 func _ready():
-	grid = get_parent()
+	if !Engine.editor_hint:
+		grid = get_parent()
 	
-	tween = $Tween
-	tween.connect_into(self)
-	turn(Vector2(0,1))
+		tween = $Tween
+		tween.connect_into(self)
+		turn(Vector2(0,1))
 	pass
 
 func _physics_process(delta):
@@ -74,6 +83,9 @@ func _on_area_exited(a):
 	blocks.erase(a)
 	is_blocked = blocks.size()
 	pass
+
+func get_class():
+	return "PlayingPiece"
 	
 func turn(dir:Vector2):
 	if dir.y < 0:
@@ -85,3 +97,12 @@ func turn(dir:Vector2):
 	else:
 		raycast=get_node(rayD)
 	pass
+
+func set_cell_width(w):
+	emit_signal("param_changed", "cell_width", w)
+
+func set_aspect_ratio(e):
+	emit_signal("param_changed", "aspect_ratio", e)
+
+func set_cell_height(h):
+	emit_signal("param_changed", "cell_height", h)

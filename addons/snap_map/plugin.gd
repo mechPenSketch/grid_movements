@@ -1,7 +1,7 @@
 tool
 extends EditorPlugin
 
-var affected_classes = ["SnapboundTiles"]
+var affected_classes = ["SnapboundTiles", "PlayingPiece", "RayCastPiece"]
 var current_node = null
 
 # CANVAS SNAP SETTINGS
@@ -16,15 +16,17 @@ var snap_ratio
 func _enter_tree():
 	# Initialization of the plugin goes here
 	
-	# 	Add the new type with a name, a parent type, a script and an icon
-	#eg: add_custom_type("My Button", "Button", preload("my_button.gd"), preload("icon.png"))
+	# ADD NODES UNIQUE TO THIS PLUGIN
 	add_custom_type("Snapbound Tiles", "TileMap", preload("classes/snapbound_tiles.gd"), preload("icons/snapbound_tiles.svg"))
+	add_custom_type("Playing Piece", "Area2D", preload("classes/playing_piece.gd"), preload("icons/playing_piece.svg"))
+	add_custom_type("RayCast Piece", "RayCast2D", preload("classes/raycast_piece.gd"), preload("icons/raycast_piece.svg"))
 	
 	# DEFINE SNAP SETTINGS
 	set_snap_settings()
 	
-	# LOAD SNAP SETTINGS
-	load_plugin()
+	# LOAD SNAP SETTING(S)
+	save_file = preload("plugin_save.tres")
+	snap_ratio = save_file.get_snap_ratio()
 	pass
 
 
@@ -32,8 +34,12 @@ func _exit_tree():
 	# Clean-up of the plugin goes here
 	
 	#	Always remember to remove it from the engine when deactivated
-	#eg: remove_custom_type("My Button")
-	#		SIGNALS
+	remove_custom_type("Snapbound Tiles")
+	remove_custom_type("Playing Piece")
+	remove_custom_type("RayCast Piece")
+	
+	# SAVE SNAP SETTING(S)
+	save_plugin()
 	pass
 
 func _on_param_changed(param, val):
@@ -97,10 +103,6 @@ func handles(node):
 		current_node.disconnect("param_changed", self, "_on_param_changed")
 		current_node = null
 	return affected_classes.has(node.get_class())
-
-func load_plugin():
-	save_file = load("plugin_save.tres")
-	snap_ratio = save_file.get_snap_ratio()
 
 func recursive_get_children(node):
 	var children = node.get_children()
