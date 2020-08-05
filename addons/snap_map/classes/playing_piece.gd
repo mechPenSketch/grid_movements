@@ -1,11 +1,13 @@
 tool
 extends Area2D
 
+class_name PlayingPiece
+
 # SNAP SETTINGS
 enum AspectRatio {NONE, SQUARE, KEEP}
-export(int, 64) var cell_width setget set_cell_width
-export(AspectRatio) var aspect_ratio setget set_aspect_ratio
-export(int, 64) var cell_height setget set_cell_height
+export(int) var cell_width = 64 setget set_cell_width
+export(AspectRatio) var aspect_ratio = AspectRatio.SQUARE setget set_aspect_ratio
+export(int) var cell_height = 64 setget set_cell_height
 
 # INDIVIDUAL PARAMETERS
 var direction = Vector2()
@@ -21,6 +23,7 @@ var tween
 var target_pos = Vector2()
 var blocks = []
 var is_blocked:bool = false
+export (Dictionary) var raycast_directions
 export (NodePath) var rayU
 export (NodePath) var rayD
 export (NodePath) var rayL
@@ -28,6 +31,9 @@ export (NodePath) var rayR
 var raycast
 export (Resource) var incoming
 signal incoming_gone
+
+# SETTING PARAM CHANGES
+signal param_changed
 
 func _ready():
 	if !Engine.editor_hint:
@@ -39,32 +45,33 @@ func _ready():
 	pass
 
 func _physics_process(delta):
-	direction = Vector2()
-		
-	if Input.is_action_pressed("ui_up"):
-		direction.y -= 1
-	elif Input.is_action_pressed("ui_down"):
-		direction.y += 1
-	elif Input.is_action_pressed("ui_left"):
-		direction.x -= 1
-	elif Input.is_action_pressed("ui_right"):
-		direction.x += 1
-	
-	if !is_moving and direction != Vector2():
-		
-		turn(direction)
-		
-		if !raycast.is_colliding():
-			target_pos = get_position() + direction * grid.get_cell_size()
+	if !Engine.editor_hint:
+		direction = Vector2()
 			
-			# ADD INCOMING BLOCK
-			var new_incoming = incoming.instance()
-			new_incoming.set_position(target_pos)
-			grid.add_child(new_incoming)
-			connect("incoming_gone", new_incoming, "queue_free")
+		if Input.is_action_pressed("ui_up"):
+			direction.y -= 1
+		elif Input.is_action_pressed("ui_down"):
+			direction.y += 1
+		elif Input.is_action_pressed("ui_left"):
+			direction.x -= 1
+		elif Input.is_action_pressed("ui_right"):
+			direction.x += 1
+		
+		if !is_moving and direction != Vector2():
 			
-			tween.move_char(self, target_pos)
-			is_moving = true
+			turn(direction)
+			
+			if !raycast.is_colliding():
+				target_pos = get_position() + direction * grid.get_cell_size()
+				
+				# ADD INCOMING BLOCK
+				var new_incoming = incoming.instance()
+				new_incoming.set_position(target_pos)
+				grid.add_child(new_incoming)
+				connect("incoming_gone", new_incoming, "queue_free")
+				
+				tween.move_char(self, target_pos)
+				is_moving = true
 	pass
 	
 func _on_tween_completed(o, k):
@@ -96,7 +103,19 @@ func turn(dir:Vector2):
 		raycast=get_node(rayR)
 	else:
 		raycast=get_node(rayD)
-	pass
+
+# SETTING PROPERTIES THROUGH PLUGIN
+
+func plugset_cell_width(w):
+	cell_width = w
+
+func plugset_aspect_ratio(e):
+	aspect_ratio = e
+	
+func plugset_cell_height(h):
+	cell_height = h
+
+# SETTING PROPERTIES THROUGH INSPECTOR
 
 func set_cell_width(w):
 	emit_signal("param_changed", "cell_width", w)

@@ -67,9 +67,10 @@ func _on_param_changed(param, val):
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
-	# CONNECT SELECTED NODE
-	node.connect("param_changed", self, "_on_param_changed")
-	snap_ratio = node.aspect_ratio
+	# IF NODE IS NOT ALREADY CONNECTED DUE TO edit(node) RUNNING MORE THAN ONCE
+	if !node.is_connected("param_changed", self, "_on_param_changed"):
+		# CONNECT SELECTED NODE
+		node.connect("param_changed", self, "_on_param_changed")
 
 func find_snap_controls():
 	var base_control = get_editor_interface().get_base_control()
@@ -122,7 +123,13 @@ func scene_changed():
 
 func set_nodes_params(node, param, val):
 	if affected_classes.has(node.get_class()):
-		node.set(param, val)
+		match param:
+			"aspect_ratio":
+				node.plugset_aspect_ratio(val)
+			"cell_width":
+				node.plugset_cell_width(val)
+			"cell_height":
+				node.plugset_cell_height(val)
 		
 	if node.get_child_count():
 		for c in node.get_children():
