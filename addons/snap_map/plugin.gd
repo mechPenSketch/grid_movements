@@ -1,7 +1,7 @@
 tool
 extends EditorPlugin
 
-var affected_classes = ["SnapboundTiles", "PlayingPiece", "RayCastPiece"]
+var affected_classes = ["SnapboundTiles", "PlayingPiece", "RayCastPiece", "ColShapePiece"]
 var current_node = null
 
 # CANVAS SNAP SETTINGS
@@ -18,9 +18,10 @@ func _enter_tree():
 	# Initialization of the plugin goes here
 	
 	# ADD NODES UNIQUE TO THIS PLUGIN
-	add_custom_type("Snapbound Tiles", "TileMap", preload("classes/snapbound_tiles.gd"), preload("icons/snapbound_tiles.svg"))
-	add_custom_type("Playing Piece", "Area2D", preload("classes/playing_piece.gd"), preload("icons/playing_piece.svg"))
-	add_custom_type("RayCast Piece", "RayCast2D", preload("classes/raycast_piece.gd"), preload("icons/raycast_piece.svg"))
+	add_custom_type("SnapboundTiles", "TileMap", preload("classes/snapbound_tiles.gd"), preload("icons/snapbound_tiles.svg"))
+	add_custom_type("PlayingPiece", "Area2D", preload("classes/playing_piece.gd"), preload("icons/playing_piece.svg"))
+	add_custom_type("RayCastPiece", "RayCast2D", preload("classes/raycast_piece.gd"), preload("icons/raycast_piece.svg"))
+	add_custom_type("CollisionShapePiece", "CollisionShape2D", preload("classes/colshape_piece.gd"), preload("icons/colshape_piece.svg"))
 	
 	# DEFINE SNAP SETTINGS
 	set_snap_settings()
@@ -35,9 +36,10 @@ func _exit_tree():
 	# Clean-up of the plugin goes here
 	
 	#	Always remember to remove it from the engine when deactivated
-	remove_custom_type("Snapbound Tiles")
-	remove_custom_type("Playing Piece")
-	remove_custom_type("RayCast Piece")
+	remove_custom_type("SnapboundTiles")
+	remove_custom_type("PlayingPiece")
+	remove_custom_type("RayCastPiece")
+	remove_custom_type("CollisionShapePiece")
 	
 	# SAVE SNAP SETTING(S)
 	save_plugin()

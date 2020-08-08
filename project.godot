@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "CollisionShape2D",
+"class": "ColShapePiece",
+"language": "GDScript",
+"path": "res://addons/snap_map/classes/colshape_piece.gd"
+}, {
 "base": "Area2D",
 "class": "PlayingPiece",
 "language": "GDScript",
@@ -30,6 +35,7 @@ _global_script_classes=[ {
 "path": "res://addons/snap_map/classes/snapbound_tiles.gd"
 } ]
 _global_script_class_icons={
+"ColShapePiece": "",
 "PlayingPiece": "",
 "PluginSave": "",
 "RayCastPiece": "",

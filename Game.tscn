@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://example/Map/base_tile.png" type="Texture" id=1]
 [ext_resource path="res://addons/snap_map/classes/playing_piece.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://example/Character/Incoming.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/snap_map/classes/snapbound_tiles.gd" type="Script" id=8]
 [ext_resource path="res://addons/snap_map/classes/raycast_piece.gd" type="Script" id=9]
+[ext_resource path="res://addons/snap_map/classes/colshape_piece.gd" type="Script" id=10]
 
 [sub_resource type="TileSet" id=1]
 0/name = "basic.png 0"
@@ -74,6 +75,7 @@ script = ExtResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Grid/Player"]
 shape = ExtResource( 6 )
+script = ExtResource( 10 )
 __meta__ = {
 "_edit_lock_": true
 }
