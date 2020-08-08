@@ -6,6 +6,7 @@ var current_node = null
 
 # CANVAS SNAP SETTINGS
 var save_file
+var snap_dialog
 var snap_spinbox
 var snap_offset_x
 var snap_offset_y
@@ -76,7 +77,6 @@ func find_snap_controls():
 	var base_control = get_editor_interface().get_base_control()
 	var children = recursive_get_children(base_control)
 
-	var snap_dialog
 	for i in children.size():
 		var child = children[i]
 		if child.get_class() == "SnapDialog":
@@ -143,6 +143,9 @@ func set_snap_step_l(param, val):
 		"cell_height":
 			snap_step_y = val
 			snap_spinbox[3].set_value(val)
+	
+	# SIMULATING PRESSING OK AFTER CONFIGURING SNAP SETTINGS
+	snap_dialog.get_ok().emit_signal("pressed")
 
 func set_snap_settings():
 	find_snap_controls()
