@@ -1,7 +1,7 @@
 tool
 extends EditorPlugin
 
-var affected_classes = ["SnapboundTiles", "PlayingPiece", "RayCastPiece", "ColShapePiece"]
+var affected_classes = ["SnapboundTiles", "RayCastPiece", "ColShapePiece"]
 var current_node = null
 
 # CANVAS SNAP SETTINGS
@@ -19,7 +19,6 @@ func _enter_tree():
 	
 	# ADD NODES UNIQUE TO THIS PLUGIN
 	add_custom_type("SnapboundTiles", "TileMap", preload("classes/snapbound_tiles.gd"), preload("icons/snapbound_tiles.svg"))
-	add_custom_type("PlayingPiece", "Area2D", preload("classes/playing_piece.gd"), preload("icons/playing_piece.svg"))
 	add_custom_type("RayCastPiece", "RayCast2D", preload("classes/raycast_piece.gd"), preload("icons/raycast_piece.svg"))
 	add_custom_type("CollisionShapePiece", "CollisionShape2D", preload("classes/colshape_piece.gd"), preload("icons/colshape_piece.svg"))
 	
@@ -37,7 +36,6 @@ func _exit_tree():
 	
 	#	Always remember to remove it from the engine when deactivated
 	remove_custom_type("SnapboundTiles")
-	remove_custom_type("PlayingPiece")
 	remove_custom_type("RayCastPiece")
 	remove_custom_type("CollisionShapePiece")
 	

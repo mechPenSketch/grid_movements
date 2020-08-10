@@ -43,6 +43,9 @@ func plugset_cell_height(h):
 	else:
 		cast_to.y = 0
 
+func get_snap_step()->Vector2:
+	return Vector2(cell_width, cell_height)
+
 # SETTING PROPERTIES THROUGH INSPECTOR
 
 func set_direction_ratio(v2):

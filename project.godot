@@ -17,7 +17,7 @@ _global_script_classes=[ {
 "base": "Area2D",
 "class": "PlayingPiece",
 "language": "GDScript",
-"path": "res://addons/snap_map/classes/playing_piece.gd"
+"path": "res://addons/snap_map/nodes-unplugged/playing_piece.gd"
 }, {
 "base": "Resource",
 "class": "PluginSave",
@@ -36,7 +36,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ColShapePiece": "",
-"PlayingPiece": "",
+"PlayingPiece": "res://addons/snap_map/nodes-unplugged/playing_piece.svg",
 "PluginSave": "",
 "RayCastPiece": "",
 "SnapboundTiles": ""

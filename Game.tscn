@@ -1,7 +1,7 @@
 [gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://example/Map/base_tile.png" type="Texture" id=1]
-[ext_resource path="res://addons/snap_map/classes/playing_piece.gd" type="Script" id=2]
+[ext_resource path="res://addons/snap_map/nodes-unplugged/playing_piece.gd" type="Script" id=2]
 [ext_resource path="res://example/Character/player.png" type="Texture" id=3]
 [ext_resource path="res://example/Character/CharTween.gd" type="Script" id=4]
 [ext_resource path="res://example/Map/Obstacle.tscn" type="PackedScene" id=5]
@@ -58,10 +58,6 @@ Vector2( 0, -1 ): NodePath("Up"),
 Vector2( 0, 1 ): NodePath("Down"),
 Vector2( 1, 0 ): NodePath("Right")
 }
-rayU = NodePath("Up")
-rayD = NodePath("Down")
-rayL = NodePath("Left")
-rayR = NodePath("Right")
 incoming = ExtResource( 7 )
 
 [node name="Sprite" type="Sprite" parent="Grid/Player"]
