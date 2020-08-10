@@ -8,9 +8,38 @@
 
 config_version=4
 
-_global_script_classes=[  ]
+_global_script_classes=[ {
+"base": "CollisionShape2D",
+"class": "ColShapePiece",
+"language": "GDScript",
+"path": "res://addons/snap_map/classes/colshape_piece.gd"
+}, {
+"base": "Area2D",
+"class": "PlayingPiece",
+"language": "GDScript",
+"path": "res://addons/snap_map/nodes-unplugged/playing_piece.gd"
+}, {
+"base": "Resource",
+"class": "PluginSave",
+"language": "GDScript",
+"path": "res://addons/snap_map/plugin_save.gd"
+}, {
+"base": "RayCast2D",
+"class": "RayCastPiece",
+"language": "GDScript",
+"path": "res://addons/snap_map/classes/raycast_piece.gd"
+}, {
+"base": "TileMap",
+"class": "SnapboundTiles",
+"language": "GDScript",
+"path": "res://addons/snap_map/classes/snapbound_tiles.gd"
+} ]
 _global_script_class_icons={
-
+"ColShapePiece": "",
+"PlayingPiece": "res://addons/snap_map/nodes-unplugged/playing_piece.svg",
+"PluginSave": "",
+"RayCastPiece": "",
+"SnapboundTiles": ""
 }
 
 [application]
@@ -18,6 +47,10 @@ _global_script_class_icons={
 config/name="Grid Movement"
 run/main_scene="res://Game.tscn"
 config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "snap_map" )
 
 [rendering]
 

@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/obstacle.png-010c8ed5b2c560cd3d148690196f618b.stex"
+path="res://.import/raycast_piece.svg-ed9a362606f081090421f1c97ca41874.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Map/obstacle.png"
-dest_files=[ "res://.import/obstacle.png-010c8ed5b2c560cd3d148690196f618b.stex" ]
+source_file="res://addons/snap_map/icons/raycast_piece.svg"
+dest_files=[ "res://.import/raycast_piece.svg-ed9a362606f081090421f1c97ca41874.stex" ]
 
 [params]
 
