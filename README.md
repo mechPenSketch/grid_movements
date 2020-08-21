@@ -5,17 +5,22 @@
 ### Requirement
 Godot Engine v3.x
 
-### Installation
+### Installing as a Project
 After downloading, open Godot Engine Project Manager. Click Import, go to the folder you've downloaded, and select "project.godot".
 
+### Installing as a Plugin
+After downloading, copy the folder"addons/snap_map" to your project file. On your project, go to Project > Project Settings > Plugins (tab) and check "Snap Map"
+
 ## Usage
+
+### Example
 The scene contains a player (green) and an obstacle (orange). The player can move in any direction, using arrow keys. The obstacle blocks the player's way.
 
-~~The main TileMap (with MainMap.gd attached) can have its cell size adjusted such that the grid step for snapping will also be automatically update.~~Due to an oversight, not only it doesn't work, it also doesn't run due to the following output:
-```
-Parser Error: The identifier "CanvasItemEditor" isn't declared in the current scope.
-```
-For now, I've commented out the part of the script that supposed to resize the grid step, and in the meantime, I'll find the solution.
+### Plugin
+There are additional nodes unique to this plugin:
+* SnapboundTiles (extended from TileMap) - its cell size can be adjusted such that the grid step for snapping will also be automatically updated.
+* ColShapePiece (extended from CollisionShape2D) - its shape size can be adjusted automatically based on changes to grid step.
+* RayCastPiece (extended from Raycast2D) - where it can cast to depends on its direction (Vector2) in proportion to grid step.
 
 ## Author
 * mechPenSketch
