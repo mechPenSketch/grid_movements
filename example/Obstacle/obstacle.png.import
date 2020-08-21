@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/obstacle.png-d7ee0f90602ba6c48beec359a0a89a03.stex"
+path="res://.import/obstacle.png-aeee823b483ca24710375210e3e05a07.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://example/Map/obstacle.png"
-dest_files=[ "res://.import/obstacle.png-d7ee0f90602ba6c48beec359a0a89a03.stex" ]
+source_file="res://example/Obstacle/obstacle.png"
+dest_files=[ "res://.import/obstacle.png-aeee823b483ca24710375210e3e05a07.stex" ]
 
 [params]
 

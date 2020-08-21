@@ -15,7 +15,6 @@ var snap_step_y
 var snap_ratio
 
 func _enter_tree():
-	# Initialization of the plugin goes here
 	
 	# ADD NODES UNIQUE TO THIS PLUGIN
 	add_custom_type("SnapboundTiles", "TileMap", preload("classes/snapbound_tiles.gd"), preload("icons/snapbound_tiles.svg"))
@@ -28,20 +27,22 @@ func _enter_tree():
 	# LOAD SNAP SETTING(S)
 	save_file = preload("plugin_save.tres")
 	snap_ratio = save_file.get_snap_ratio()
-	pass
-
+	
+	# SIGNALS
+	connect("scene_changed", self, "_on_scene_changed")
 
 func _exit_tree():
-	# Clean-up of the plugin goes here
 	
-	#	Always remember to remove it from the engine when deactivated
+	# REMOVE BACK NODES UNIQUE TO THIS PLUGIN
 	remove_custom_type("SnapboundTiles")
 	remove_custom_type("RayCastPiece")
 	remove_custom_type("CollisionShapePiece")
 	
 	# SAVE SNAP SETTING(S)
 	save_plugin()
-	pass
+	
+	# SIGNALS
+	disconnect("scene_changed", self, "_on_scene_changed")
 
 func _on_param_changed(param, val):
 	match param:
@@ -65,6 +66,13 @@ func _on_param_changed(param, val):
 				
 	# MASS SETTING PARAM TO ALL AFFECT NODES
 	set_nodes_params(get_tree().get_edited_scene_root(), param, val)
+
+func _on_scene_changed(scene_root):
+	print("Scene is changed")
+	# KEEP PARAMETERS UP-TO-DATE
+	set_nodes_params(get_tree().get_edited_scene_root(), "aspect_ratio", snap_ratio)
+	set_nodes_params(get_tree().get_edited_scene_root(), "cell_width", snap_step_x)
+	set_nodes_params(get_tree().get_edited_scene_root(), "cell_height", snap_step_y)
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
