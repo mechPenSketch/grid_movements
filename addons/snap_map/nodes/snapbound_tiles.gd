@@ -1,7 +1,7 @@
 tool
 extends TileMap
 
-class_name SnapboundTiles
+class_name SnapboundTiles, "snapbound_tiles.svg"
 
 enum AspectRatio {NONE, SQUARE, KEEP}
 export(int) var cell_width = 64 setget set_cell_width

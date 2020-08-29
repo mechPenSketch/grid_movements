@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/obstacle.png-d7ee0f90602ba6c48beec359a0a89a03.stex"
+path="res://.import/snapbound_tiles.svg-fb6abff7fc612ecc1d831850da0176f5.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://example/Map/obstacle.png"
-dest_files=[ "res://.import/obstacle.png-d7ee0f90602ba6c48beec359a0a89a03.stex" ]
+source_file="res://addons/snap_map/nodes/snapbound_tiles.svg"
+dest_files=[ "res://.import/snapbound_tiles.svg-fb6abff7fc612ecc1d831850da0176f5.stex" ]
 
 [params]
 

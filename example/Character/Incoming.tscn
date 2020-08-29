@@ -1,6 +1,8 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://example/Map/TileBlockShape.tres" type="Shape2D" id=2]
+[ext_resource path="res://example/Obstacle/TileBlockShape.tres" type="Shape2D" id=2]
+
+
 
 [node name="Obstacle" type="Area2D"]
 

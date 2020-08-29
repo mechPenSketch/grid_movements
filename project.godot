@@ -12,40 +12,34 @@ _global_script_classes=[ {
 "base": "CollisionShape2D",
 "class": "ColShapePiece",
 "language": "GDScript",
-"path": "res://addons/snap_map/classes/colshape_piece.gd"
+"path": "res://addons/snap_map/nodes/colshape_piece.gd"
 }, {
 "base": "Area2D",
 "class": "PlayingPiece",
 "language": "GDScript",
 "path": "res://addons/snap_map/nodes-unplugged/playing_piece.gd"
 }, {
-"base": "Resource",
-"class": "PluginSave",
-"language": "GDScript",
-"path": "res://addons/snap_map/plugin_save.gd"
-}, {
 "base": "RayCast2D",
 "class": "RayCastPiece",
 "language": "GDScript",
-"path": "res://addons/snap_map/classes/raycast_piece.gd"
+"path": "res://addons/snap_map/nodes/raycast_piece.gd"
 }, {
 "base": "TileMap",
 "class": "SnapboundTiles",
 "language": "GDScript",
-"path": "res://addons/snap_map/classes/snapbound_tiles.gd"
+"path": "res://addons/snap_map/nodes/snapbound_tiles.gd"
 } ]
 _global_script_class_icons={
-"ColShapePiece": "",
+"ColShapePiece": "res://addons/snap_map/nodes/colshape_piece.svg",
 "PlayingPiece": "res://addons/snap_map/nodes-unplugged/playing_piece.svg",
-"PluginSave": "",
-"RayCastPiece": "",
-"SnapboundTiles": ""
+"RayCastPiece": "res://addons/snap_map/nodes/raycast_piece.svg",
+"SnapboundTiles": "res://addons/snap_map/nodes/snapbound_tiles.svg"
 }
 
 [application]
 
 config/name="Grid Movement"
-run/main_scene="res://Game.tscn"
+run/main_scene="res://example/Map/Game.tscn"
 config/icon="res://icon.png"
 
 [editor_plugins]

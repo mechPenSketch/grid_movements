@@ -1,7 +1,7 @@
 tool
 extends RayCast2D
 
-class_name RayCastPiece
+class_name RayCastPiece, "raycast_piece.svg"
 
 # SNAP SETTINGS
 enum AspectRatio {NONE, SQUARE, KEEP}

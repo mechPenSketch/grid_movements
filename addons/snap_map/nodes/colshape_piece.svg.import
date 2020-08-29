@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/raycast_piece.svg-ed9a362606f081090421f1c97ca41874.stex"
+path="res://.import/colshape_piece.svg-89c9c8c539a2800ce0a58d3bea59a403.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/snap_map/icons/raycast_piece.svg"
-dest_files=[ "res://.import/raycast_piece.svg-ed9a362606f081090421f1c97ca41874.stex" ]
+source_file="res://addons/snap_map/nodes/colshape_piece.svg"
+dest_files=[ "res://.import/colshape_piece.svg-89c9c8c539a2800ce0a58d3bea59a403.stex" ]
 
 [params]
 

@@ -1,7 +1,7 @@
 tool
 extends CollisionShape2D
 
-class_name ColShapePiece
+class_name ColShapePiece, "colshape_piece.svg"
 
 # SNAP SETTINGS
 enum AspectRatio {NONE, SQUARE, KEEP}
