@@ -1,6 +1,11 @@
 tool
 extends EditorPlugin
 
+# SAVE FILE
+var config
+const CONFIG_FILEPATH = "res://addons/snap_map/config.cfg"
+
+# CLASSES
 var affected_classes = ["SnapboundTiles", "RayCastPiece", "ColShapePiece"]
 var current_node = null
 
@@ -16,17 +21,20 @@ var snap_ratio
 
 func _enter_tree():
 	
+	# LOAD SNAP SETTING(S)
+	config = ConfigFile.new()
+	var err = config.load(CONFIG_FILEPATH)
+	if err == OK:
+		snap_step_x = config.get_value("snap", "step_x")
+		snap_step_y = config.get_value("snap", "step_y")
+		snap_ratio = config.get_value("snap", "ratio")
+	else:
+		print(err)
+	
 	# DEFINE SNAP SETTINGS
 	set_snap_settings()
-	
-	# LOAD SNAP SETTING(S)
-	save_file = preload("plugin_save.tres")
-	snap_ratio = save_file.get_snap_ratio()
 
 func _exit_tree():
-	
-	# SAVE SNAP SETTING(S)
-	save_plugin()
 	
 	# SIGNALS
 	disconnect("scene_changed", self, "_on_scene_changed")
@@ -36,7 +44,7 @@ func _ready():
 	
 	# SIGNALS
 	connect("scene_changed", self, "_on_scene_changed")
-	#get_tree().connect("node_added", self, "_on_node_added")
+	get_tree().connect("node_added", self, "_on_node_added")
 
 func _on_node_added(n):
 	# SET SNAP SETTINGS ONTO ADDED NODE
@@ -94,7 +102,6 @@ func find_snap_controls():
 	for child in recursive_get_children(snap_dialog):
 		if child.get_class() == "SpinBox":
 			snap_spinbox.append(child)
-	print(snap_spinbox[0].get_parent())
 	#for i in snap_spinbox.size():
 	#	print(snap_spinbox[i].get_value())
 
@@ -125,8 +132,15 @@ func recursive_get_children(node):
 			children += recursive_get_children(child)
 		return children
 
-func save_plugin():
-	save_file.set_snap_ratio(snap_ratio)
+# ON SAVING PROJECT
+func save_external_data():
+	# SET INTO CONFIG FILES
+	config.set_value("snap", "step_x", snap_step_x)
+	config.set_value("snap", "step_y", snap_step_y)
+	config.set_value("snap", "ratio", snap_ratio)
+	
+	# OVERWRITTING FILE
+	config.save(CONFIG_FILEPATH)
 
 # ON SCENE BEING CHANGED
 func scene_changed():
@@ -164,5 +178,5 @@ func set_snap_settings():
 	find_snap_controls()
 	snap_offset_x = snap_spinbox[0].get_value()
 	snap_offset_y = snap_spinbox[1].get_value()
-	snap_step_x = snap_spinbox[2].get_value()
-	snap_step_y = snap_spinbox[3].get_value()
+	snap_spinbox[2].set_value(snap_step_x)
+	snap_spinbox[3].set_value(snap_step_y)
