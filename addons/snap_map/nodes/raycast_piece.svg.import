@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/snapbound_tiles.svg-7ffa44a3f5ffa57cc2d747f27cc77705.stex"
+path="res://.import/raycast_piece.svg-3be398851816ec9ebde1463ff8d21134.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/snap_map/icons/snapbound_tiles.svg"
-dest_files=[ "res://.import/snapbound_tiles.svg-7ffa44a3f5ffa57cc2d747f27cc77705.stex" ]
+source_file="res://addons/snap_map/nodes/raycast_piece.svg"
+dest_files=[ "res://.import/raycast_piece.svg-3be398851816ec9ebde1463ff8d21134.stex" ]
 
 [params]
 
