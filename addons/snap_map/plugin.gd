@@ -102,8 +102,6 @@ func find_snap_controls():
 	for child in recursive_get_children(snap_dialog):
 		if child.get_class() == "SpinBox":
 			snap_spinbox.append(child)
-	#for i in snap_spinbox.size():
-	#	print(snap_spinbox[i].get_value())
 
 func get_plugin_name():
 	return "Snap Map"
@@ -163,20 +161,28 @@ func set_nodes_params(node, param, val):
 func set_snap_step_l(param, val):
 	match param:
 		"cell_width":
+			# SNAP STEP
 			snap_step_x = val
 			snap_spinbox[2].set_value(val)
-			print(snap_step_x)
-			print(snap_spinbox[2].get_value())
+			
+			# OFFSET
+			snap_spinbox[0].set_value(snap_offset_x / 2)
+		
 		"cell_height":
 			snap_step_y = val
 			snap_spinbox[3].set_value(val)
+			snap_spinbox[1].set_value(snap_offset_y / 2)
 	
 	# SIMULATING PRESSING OK AFTER CONFIGURING SNAP SETTINGS
 	snap_dialog.get_ok().emit_signal("pressed")
 
 func set_snap_settings():
 	find_snap_controls()
-	snap_offset_x = snap_spinbox[0].get_value()
-	snap_offset_y = snap_spinbox[1].get_value()
+	
+	# OFFSET
+	snap_spinbox[0].set_value(snap_offset_x / 2)
+	snap_spinbox[1].set_value(snap_offset_y / 2)
+	
+	# SNAP STEP
 	snap_spinbox[2].set_value(snap_step_x)
 	snap_spinbox[3].set_value(snap_step_y)
