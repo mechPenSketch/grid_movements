@@ -22,7 +22,7 @@ There are additional nodes unique to this plugin:
 * ColShapePiece (extended from CollisionShape2D) - its shape size can be adjusted automatically based on changes to grid step.
 * RayCastPiece (extended from Raycast2D) - where it can cast to depends on its direction (Vector2) in proportion to grid step.
 
-## Disclaimer
+## Caution
 * In case of updates, back up "addon/config.cfg" to preserve your settings.
 
 ## Author
