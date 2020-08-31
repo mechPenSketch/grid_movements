@@ -35,15 +35,15 @@ func _enter_tree():
 	# SELF-SIGNALS
 	connect("scene_changed", self, "_on_scene_changed")
 	get_tree().connect("node_added", self, "_on_node_added")
-	
-	# SIGNALS FROM OTHER NODES
-	disconnect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
 
 func _exit_tree():
 	
 	# SELF-SIGNALS
 	disconnect("scene_changed", self, "_on_scene_changed")
 	get_tree().disconnect("node_added", self, "_on_node_added")
+	
+	# SIGNALS FROM OTHER NODES
+	disconnect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
 	
 func _input(event):
 	emit_signal("input_event", event)
