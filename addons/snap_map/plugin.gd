@@ -6,18 +6,18 @@ var config
 const CONFIG_FILEPATH = "res://addons/snap_map/config.cfg"
 
 # CLASSES
-var affected_classes = ["SnapboundTiles", "RayCastPiece", "ColShapePiece"]
+var affected_classes = ["SnapboundTiles", "RayCastPiece", "ColShapePiece", "PlayingPiece"]
 var current_node = null
 
 # CANVAS SNAP SETTINGS
 var save_file
 var snap_dialog
 var snap_spinbox
-var snap_offset_x
-var snap_offset_y
 var snap_step_x
 var snap_step_y
 var snap_ratio
+
+signal input_event
 
 func _enter_tree():
 	
@@ -28,29 +28,35 @@ func _enter_tree():
 		snap_step_x = config.get_value("snap", "step_x")
 		snap_step_y = config.get_value("snap", "step_y")
 		snap_ratio = config.get_value("snap", "ratio")
-	else:
-		print(err)
 	
 	# DEFINE SNAP SETTINGS
 	set_snap_settings()
+	
+	# SELF-SIGNALS
+	connect("scene_changed", self, "_on_scene_changed")
+	get_tree().connect("node_added", self, "_on_node_added")
+	
+	# SIGNALS FROM OTHER NODES
+	disconnect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
 
 func _exit_tree():
 	
-	# SIGNALS
+	# SELF-SIGNALS
 	disconnect("scene_changed", self, "_on_scene_changed")
 	get_tree().disconnect("node_added", self, "_on_node_added")
-
-func _ready():
 	
-	# SIGNALS
-	connect("scene_changed", self, "_on_scene_changed")
-	get_tree().connect("node_added", self, "_on_node_added")
-
+func _input(event):
+	emit_signal("input_event", event)
+	
 func _on_node_added(n):
+	
 	# SET SNAP SETTINGS ONTO ADDED NODE
-	set_nodes_params(n, "aspect_ratio", snap_ratio)
-	set_nodes_params(n, "cell_width", snap_step_x)
-	set_nodes_params(n, "cell_height", snap_step_y)
+	set_node_params(n, "aspect_ratio", snap_ratio)
+	set_node_params(n, "cell_width", snap_step_x)
+	set_node_params(n, "cell_height", snap_step_y)
+	
+	# CONNECT NODE
+	connect_node(n, "input_event", affected_classes[3], "_plugin_input")
 
 func _on_param_changed(param, val):
 	match param:
@@ -70,22 +76,51 @@ func _on_param_changed(param, val):
 					2:
 						other_val = current_node.get(other_param) * val / prev_val
 				set_snap_step_l(other_param, other_val)
-				set_nodes_params(get_tree().get_edited_scene_root(), other_param, other_val)
+				set_node_params(get_tree().get_edited_scene_root(), other_param, other_val)
 				
 	# MASS SETTING PARAM TO ALL AFFECT NODES
-	set_nodes_params(get_tree().get_edited_scene_root(), param, val)
+	set_node_params(get_tree().get_edited_scene_root(), param, val)
 
 func _on_scene_changed(scene_root):
 	
 	# KEEP PARAMETERS UP-TO-DATE
-	set_nodes_params(get_tree().get_edited_scene_root(), "aspect_ratio", snap_ratio)
-	set_nodes_params(get_tree().get_edited_scene_root(), "cell_width", snap_step_x)
-	set_nodes_params(get_tree().get_edited_scene_root(), "cell_height", snap_step_y)
+	set_node_params_then_children(get_tree().get_edited_scene_root(), "aspect_ratio", snap_ratio)
+	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_width", snap_step_x)
+	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_height", snap_step_y)
+	
+	# MASS CONNECT NODES
+	connect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
+
+func connect_node(n, s, c, m):
+	if n.is_class(c):
+		if !is_connected(s, n, m):
+			connect(s, n, m)
+	
+func connect_node_then_children(n, s, c, m):
+	connect_node(n, s, c, m)
+	
+	if n.get_child_count():
+		for ch in n.get_children():
+			connect_node_then_children(ch, s, c, m)
+
+func disconnect_node(n, s, c, m):
+	if n.is_class(c):
+		if is_connected(s, n, m):
+			disconnect(s, n, m)
+	
+func disconnect_node_then_children(n, s, c, m):
+	disconnect_node(n, s, c, m)
+	
+	if n.get_child_count():
+		for ch in n.get_children():
+			disconnect_node_then_children(ch, s, c, m)
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
+	
 	# IF NODE IS NOT ALREADY CONNECTED DUE TO edit(node) RUNNING MORE THAN ONCE
 	if !node.is_connected("param_changed", self, "_on_param_changed"):
+		
 		# CONNECT SELECTED NODE
 		node.connect("param_changed", self, "_on_param_changed")
 
@@ -140,11 +175,7 @@ func save_external_data():
 	# OVERWRITTING FILE
 	config.save(CONFIG_FILEPATH)
 
-# ON SCENE BEING CHANGED
-func scene_changed():
-	print("Scene is changed")
-
-func set_nodes_params(node, param, val):
+func set_node_params(node, param, val):
 	if affected_classes.has(node.get_class()):
 		match param:
 			"aspect_ratio":
@@ -153,10 +184,13 @@ func set_nodes_params(node, param, val):
 				node.plugset_cell_width(val)
 			"cell_height":
 				node.plugset_cell_height(val)
-		
+
+func set_node_params_then_children(node, param, val):
+	set_node_params(node, param, val)
+	
 	if node.get_child_count():
 		for c in node.get_children():
-			set_nodes_params(c, param, val)
+			set_node_params_then_children(c, param, val)
 
 func set_snap_step_l(param, val):
 	match param:
@@ -166,12 +200,12 @@ func set_snap_step_l(param, val):
 			snap_spinbox[2].set_value(val)
 			
 			# OFFSET
-			snap_spinbox[0].set_value(snap_offset_x / 2)
+			snap_spinbox[0].set_value(snap_step_x / 2)
 		
 		"cell_height":
 			snap_step_y = val
 			snap_spinbox[3].set_value(val)
-			snap_spinbox[1].set_value(snap_offset_y / 2)
+			snap_spinbox[1].set_value(snap_step_y / 2)
 	
 	# SIMULATING PRESSING OK AFTER CONFIGURING SNAP SETTINGS
 	snap_dialog.get_ok().emit_signal("pressed")
@@ -180,8 +214,8 @@ func set_snap_settings():
 	find_snap_controls()
 	
 	# OFFSET
-	snap_spinbox[0].set_value(snap_offset_x / 2)
-	snap_spinbox[1].set_value(snap_offset_y / 2)
+	snap_spinbox[0].set_value(snap_step_x / 2)
+	snap_spinbox[1].set_value(snap_step_y / 2)
 	
 	# SNAP STEP
 	snap_spinbox[2].set_value(snap_step_x)

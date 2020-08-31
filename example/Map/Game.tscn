@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://example/Map/TileSet.tres" type="TileSet" id=1]
-[ext_resource path="res://addons/snap_map/nodes-unplugged/playing_piece.gd" type="Script" id=2]
+[ext_resource path="res://addons/snap_map/nodes/playing_piece.gd" type="Script" id=2]
 [ext_resource path="res://example/Character/player.png" type="Texture" id=3]
 [ext_resource path="res://example/Character/CharTween.gd" type="Script" id=4]
 [ext_resource path="res://example/Obstacle/Obstacle.tscn" type="PackedScene" id=5]
@@ -20,8 +20,10 @@ tile_data = PoolIntArray( 0, 0, 0, 1, 1, 0, 2, 0, 0, 3, 1, 0, 4, 0, 0, 5, 1, 0, 
 script = ExtResource( 8 )
 
 [node name="Player" type="Area2D" parent="Grid"]
-position = Vector2( 544, 224 )
+position = Vector2( 352, 160 )
 script = ExtResource( 2 )
+grid_x = 5
+grid_y = 2
 raycast_directions = {
 Vector2( -1, 0 ): NodePath("Left"),
 Vector2( 0, -1 ): NodePath("Up"),
