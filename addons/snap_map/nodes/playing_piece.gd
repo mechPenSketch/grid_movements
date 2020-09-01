@@ -101,7 +101,7 @@ func _on_area_exited(a):
 func _plugin_input(e):
 	input_event = e
 
-# CLASS NAME
+# CLASS DATA
 
 func get_class():
 	return "PlayingPiece"

@@ -15,8 +15,13 @@ export(Vector2) var direction_ratio setget set_direction_ratio
 # SETTING PARAM CHANGES
 signal param_changed
 
+# CLASS DATA
+
 func get_class():
 	return "RayCastPiece"
+
+func is_class(s)->bool:
+	return s == get_class() or .is_class(s)
 
 # SETTING PROPERTIES THROUGH PLUGIN
 

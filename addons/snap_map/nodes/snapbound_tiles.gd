@@ -11,8 +11,13 @@ export(int) var cell_height = 64 setget set_cell_height
 # SETTING PARAM CHANGES
 signal param_changed
 
+# CLASS DATA
+
 func get_class():
 	return "SnapboundTiles"
+
+func is_class(s)->bool:
+	return s == get_class() or .is_class(s)
 
 # SETTING PROPERTIES THROUGH PLUGIN
 

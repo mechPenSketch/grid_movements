@@ -154,7 +154,12 @@ func handles(node):
 	if current_node != null:
 		current_node.disconnect("param_changed", self, "_on_param_changed")
 		current_node = null
-	return affected_classes.has(node.get_class())
+	
+	# IF NODE IS OR INHERITS FROM AFFECT CLASS
+	for str_cls in affected_classes:
+		if node.is_class(str_cls):
+			return true
+	return false
 
 func recursive_get_children(node):
 	var children = node.get_children()
@@ -176,14 +181,17 @@ func save_external_data():
 	config.save(CONFIG_FILEPATH)
 
 func set_node_params(node, param, val):
-	if affected_classes.has(node.get_class()):
-		match param:
-			"aspect_ratio":
-				node.plugset_aspect_ratio(val)
-			"cell_width":
-				node.plugset_cell_width(val)
-			"cell_height":
-				node.plugset_cell_height(val)
+	# IF NODE IS OR INHERITS FROM AFFECT CLASS
+	for str_cls in affected_classes:
+		if node.is_class(str_cls):
+			match param:
+				"aspect_ratio":
+					node.plugset_aspect_ratio(val)
+				"cell_width":
+					node.plugset_cell_width(val)
+				"cell_height":
+					node.plugset_cell_height(val)
+			break
 
 func set_node_params_then_children(node, param, val):
 	set_node_params(node, param, val)
