@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://example/Map/TileSet.tres" type="TileSet" id=1]
-[ext_resource path="res://addons/snap_map/nodes/playing_piece.gd" type="Script" id=2]
+[ext_resource path="res://example/Character/Player.gd" type="Script" id=2]
 [ext_resource path="res://example/Character/player.png" type="Texture" id=3]
 [ext_resource path="res://example/Character/CharTween.gd" type="Script" id=4]
 [ext_resource path="res://example/Obstacle/Obstacle.tscn" type="PackedScene" id=5]
@@ -20,10 +20,9 @@ tile_data = PoolIntArray( 0, 0, 0, 1, 1, 0, 2, 0, 0, 3, 1, 0, 4, 0, 0, 5, 1, 0, 
 script = ExtResource( 8 )
 
 [node name="Player" type="Area2D" parent="Grid"]
-position = Vector2( 352, 160 )
+position = Vector2( 416, 224 )
 script = ExtResource( 2 )
-grid_x = 5
-grid_y = 2
+grid_x = 1
 raycast_directions = {
 Vector2( -1, 0 ): NodePath("Left"),
 Vector2( 0, -1 ): NodePath("Up"),
@@ -47,6 +46,9 @@ script = ExtResource( 10 )
 __meta__ = {
 "_edit_lock_": true
 }
+cell_width = 64
+aspect_ratio = 1
+cell_height = 64
 
 [node name="Up" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( 0, -32 )
@@ -59,6 +61,9 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
+cell_width = 64
+aspect_ratio = 1
+cell_height = 64
 direction_ratio = Vector2( 0, -1 )
 
 [node name="Down" type="RayCast2D" parent="Grid/Player"]
@@ -72,6 +77,9 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
+cell_width = 64
+aspect_ratio = 1
+cell_height = 64
 direction_ratio = Vector2( 0, 1 )
 
 [node name="Left" type="RayCast2D" parent="Grid/Player"]
@@ -85,6 +93,9 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
+cell_width = 64
+aspect_ratio = 1
+cell_height = 64
 direction_ratio = Vector2( -1, 0 )
 
 [node name="Right" type="RayCast2D" parent="Grid/Player"]
@@ -98,7 +109,12 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
+cell_width = 64
+aspect_ratio = 1
+cell_height = 64
 direction_ratio = Vector2( 1, 0 )
 
 [node name="Obstacle" parent="Grid" instance=ExtResource( 5 )]
-position = Vector2( 672, 352 )
+position = Vector2( 608, 352 )
+grid_x = 9
+grid_y = 5
