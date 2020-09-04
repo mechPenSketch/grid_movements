@@ -76,10 +76,10 @@ func _on_param_changed(param, val):
 					2:
 						other_val = current_node.get(other_param) * val / prev_val
 				set_snap_step_l(other_param, other_val)
-				set_node_params(get_tree().get_edited_scene_root(), other_param, other_val)
+				set_node_params_then_children(get_tree().get_edited_scene_root(), other_param, other_val)
 				
 	# MASS SETTING PARAM TO ALL AFFECT NODES
-	set_node_params(get_tree().get_edited_scene_root(), param, val)
+	set_node_params_then_children(get_tree().get_edited_scene_root(), param, val)
 
 func _on_scene_changed(scene_root):
 	

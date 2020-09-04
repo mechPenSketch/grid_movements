@@ -20,7 +20,7 @@ tile_data = PoolIntArray( 0, 0, 0, 1, 1, 0, 2, 0, 0, 3, 1, 0, 4, 0, 0, 5, 1, 0, 
 script = ExtResource( 8 )
 
 [node name="Player" type="Area2D" parent="Grid"]
-position = Vector2( 416, 224 )
+position = Vector2( 96, 32 )
 script = ExtResource( 2 )
 grid_x = 1
 raycast_directions = {

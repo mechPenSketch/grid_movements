@@ -20,13 +20,14 @@ export (Resource) var incoming
 signal incoming_gone
 
 func _ready():
-	set_notify_transform(true)
+	if !Engine.editor_hint:
+		set_notify_transform(true)
+		
+		grid = get_parent()
 	
-	grid = get_parent()
-
-	tween = $Tween
-	tween.connect_into(self)
-	turn(Vector2(0,1))
+		tween = $Tween
+		tween.connect_into(self)
+		turn(Vector2(0,1))
 
 func _input(event):
 	direction = Vector2()
