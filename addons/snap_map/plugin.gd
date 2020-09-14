@@ -58,7 +58,7 @@ func _on_node_added(n):
 	# CONNECT NODE
 	connect_node(n, "input_event", affected_classes[3], "_plugin_input")
 
-func _on_param_changed(param, val):
+func _on_param_changed(param, val, fc_nd=null):
 	match param:
 		"aspect_ratio":
 			snap_ratio = val
@@ -77,6 +77,7 @@ func _on_param_changed(param, val):
 						other_val = current_node.get(other_param) * val / prev_val
 				set_snap_step_l(other_param, other_val)
 				set_node_params_then_children(get_tree().get_edited_scene_root(), other_param, other_val)
+				fc_nd.property_list_changed_notify()
 				
 	# MASS SETTING PARAM TO ALL AFFECT NODES
 	set_node_params_then_children(get_tree().get_edited_scene_root(), param, val)

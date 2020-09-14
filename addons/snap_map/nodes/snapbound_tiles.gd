@@ -35,10 +35,10 @@ func plugset_cell_height(h):
 # SETTING PROPERTIES THROUGH INSPECTOR
 
 func set_cell_width(w):
-	emit_signal("param_changed", "cell_width", w)
+	emit_signal("param_changed", "cell_width", w, self)
 
 func set_aspect_ratio(e):
 	emit_signal("param_changed", "aspect_ratio", e)
 
 func set_cell_height(h):
-	emit_signal("param_changed", "cell_height", h)
+	emit_signal("param_changed", "cell_height", h, self)
