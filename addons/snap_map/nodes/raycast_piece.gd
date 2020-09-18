@@ -62,6 +62,8 @@ func set_direction_ratio(v2):
 		
 	if prev_dr.y != direction_ratio.y:
 		plugset_cell_height(cell_height)
+		
+	property_list_changed_notify()
 
 func set_cell_width(w):
 	emit_signal("param_changed", "cell_width", w, self)
