@@ -14,6 +14,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/snap_map/nodes/colshape_piece.gd"
 }, {
+"base": "ColShapePiece",
+"class": "ColShapePieceEx",
+"language": "GDScript",
+"path": "res://addons/snap_map/nodes/colshape_expiece.gd"
+}, {
 "base": "Area2D",
 "class": "PlayingPiece",
 "language": "GDScript",
@@ -31,6 +36,7 @@ _global_script_classes=[ {
 } ]
 _global_script_class_icons={
 "ColShapePiece": "res://addons/snap_map/nodes/colshape_piece.svg",
+"ColShapePieceEx": "res://addons/snap_map/nodes/colshape_expiece.svg",
 "PlayingPiece": "res://addons/snap_map/nodes/playing_piece.svg",
 "RayCastPiece": "res://addons/snap_map/nodes/raycast_piece.svg",
 "SnapboundTiles": "res://addons/snap_map/nodes/snapbound_tiles.svg"

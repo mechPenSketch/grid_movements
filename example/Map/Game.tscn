@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=15 format=2]
 
 [ext_resource path="res://example/Map/TileSet.tres" type="TileSet" id=1]
 [ext_resource path="res://example/Character/Player.gd" type="Script" id=2]
@@ -10,6 +10,12 @@
 [ext_resource path="res://addons/snap_map/nodes/snapbound_tiles.gd" type="Script" id=8]
 [ext_resource path="res://addons/snap_map/nodes/raycast_piece.gd" type="Script" id=9]
 [ext_resource path="res://addons/snap_map/nodes/colshape_piece.gd" type="Script" id=10]
+[ext_resource path="res://example/Obstacle/obstacle3x3.png" type="Texture" id=11]
+[ext_resource path="res://addons/snap_map/nodes/colshape_expiece.gd" type="Script" id=12]
+[ext_resource path="res://addons/snap_map/nodes/playing_piece.gd" type="Script" id=13]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 80, 80 )
 
 [node name="Game" type="Node2D"]
 
@@ -101,6 +107,21 @@ __meta__ = {
 direction_ratio = Vector2( 1, 0 )
 
 [node name="Obstacle" parent="Grid" instance=ExtResource( 5 )]
-position = Vector2( 608, 352 )
-grid_x = 9
-grid_y = 5
+position = Vector2( 864, 480 )
+grid_x = 13
+grid_y = 7
+
+[node name="PlayingPiece" type="Area2D" parent="Grid"]
+position = Vector2( 224, 416 )
+script = ExtResource( 13 )
+grid_x = 3
+grid_y = 6
+
+[node name="Sprite" type="Sprite" parent="Grid/PlayingPiece"]
+texture = ExtResource( 11 )
+
+[node name="ColShapePieceEx" type="CollisionShape2D" parent="Grid/PlayingPiece"]
+shape = SubResource( 1 )
+script = ExtResource( 12 )
+grid_width = 3
+grid_height = 3
