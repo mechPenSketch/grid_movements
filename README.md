@@ -19,11 +19,18 @@ The scene contains a player (green) and an obstacle (orange). The player can mov
 ### Plugin
 There are additional nodes unique to this plugin:
 * SnapboundTiles (extended from TileMap) - its cell size can be adjusted such that the grid step for snapping will also be automatically updated.
+* PlayingPiece (extended from Area2D) - a playing piece to be moved around a map of tiles.
 * ColShapePiece (extended from CollisionShape2D) - its shape size can be adjusted automatically based on changes to grid step.
+** ColShapePieceEx (extended from ColShapePiece) - use this to cover more than one tiles.
 * RayCastPiece (extended from Raycast2D) - where it can cast to depends on its direction (Vector2) in proportion to grid step.
 
 ## Caution
 * In case of updates, back up "addon/config.cfg" to preserve your settings.
+
+## Contribution
+If you find this helpful, please support me financially so that I can earn a living making Godot Assets:
+
+[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I1208SA)
 
 ## Author
 * mechPenSketch
