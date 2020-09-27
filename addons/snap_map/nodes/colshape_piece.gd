@@ -70,7 +70,7 @@ func set_shape(val):
 	.set_shape(val)
 	set_shape_width()
 	set_shape_height()
-	property_list_changed_notify()
+	val.property_list_changed_notify()
 
 func set_shape_width():
 	match shape.get_class():

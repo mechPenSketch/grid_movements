@@ -29,10 +29,13 @@ func plugset_cell_width(w):
 	cell_width = w
 	var ratio = direction_ratio.x
 	if ratio > 0:
+		position.x = w / 2
 		cast_to.x = w * (ratio - 0.5)
 	elif ratio < 0:
+		position.x = -w / 2
 		cast_to.x = w * (ratio + 0.5)
 	else:
+		position.x = 0
 		cast_to.x = 0
 
 func plugset_aspect_ratio(e):
@@ -42,10 +45,13 @@ func plugset_cell_height(h):
 	cell_height = h
 	var ratio = direction_ratio.y
 	if ratio > 0:
+		position.y = h / 2
 		cast_to.y = h * (ratio - 0.5)
 	elif ratio < 0:
+		position.y = -h / 2
 		cast_to.y = h * (ratio + 0.5)
 	else:
+		position.y = 0
 		cast_to.y = 0
 
 func get_snap_step()->Vector2:
