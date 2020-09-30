@@ -21,7 +21,7 @@ func _notification(what):
 			if !input_event.is_pressed():
 				# SET GRID POSITION
 				grid_x = int(position.x) / cell_width
-				grid_y = int(position.y) / cell_width
+				grid_y = int(position.y) / cell_height
 				property_list_changed_notify()
 
 func _plugin_input(e):
