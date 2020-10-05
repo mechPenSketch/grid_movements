@@ -56,13 +56,22 @@ func plugset_cell_height(h):
 # SETTING PROPERTIES THROUGH INSPECTOR
 
 func set_cell_width(w):
-	emit_signal("param_changed", "cell_width", w, self)
+	if Engine.editor_hint:
+		emit_signal("param_changed", "cell_width", w, self)
+	else:
+		cell_width = w
 
 func set_aspect_ratio(e):
-	emit_signal("param_changed", "aspect_ratio", e)
+	if Engine.editor_hint:
+		emit_signal("param_changed", "aspect_ratio", e)
+	else:
+		aspect_ratio = e
 
 func set_cell_height(h):
-	emit_signal("param_changed", "cell_height", h, self)
+	if Engine.editor_hint:
+		emit_signal("param_changed", "cell_height", h, self)
+	else:
+		cell_height = h
 	
 # SETTING SHAPE DIMENSIONS
 

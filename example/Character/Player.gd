@@ -46,7 +46,9 @@ func _input(event):
 		turn(direction)
 		
 		if !raycast.is_colliding():
-			target_pos = get_position() + direction * grid.get_cell_size()
+			grid_x += direction.x
+			grid_y += direction.y
+			target_pos = get_position() + direction * Vector2(cell_width, cell_height)
 			
 			# ADD INCOMING BLOCK
 			var new_incoming = incoming.instance()
@@ -60,18 +62,15 @@ func _input(event):
 func _on_tween_completed(o, k):
 	is_moving = false
 	emit_signal("incoming_gone")
-	pass
 
 func _on_area_entered(a):
 	if a.get_parent() != $Position2D:
 		blocks.append(a)
 		is_blocked = true
-	pass
 
 func _on_area_exited(a):
 	blocks.erase(a)
 	is_blocked = blocks.size()
-	pass
 
 func turn(dir:Vector2):
 	raycast = get_node(raycast_directions[dir])
