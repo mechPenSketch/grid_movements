@@ -40,6 +40,9 @@ func set_grid_height(val):
 
 # SHAPES DATA
 
+func create_new_shape():
+	return RectangleShape2D.new()
+
 func is_not_aligned_center_x():
 	return anchor % 3 != 1
 

@@ -22,6 +22,16 @@ func is_class(s)->bool:
 
 # SHAPE DATA
 
+func _enter_tree():
+	if shape == null:
+		var new_shape = create_new_shape()
+		shape = new_shape
+		set_shape_width()
+		set_shape_height()
+
+func create_new_shape():
+	return load(get_script().get_path().get_base_dir() + "/colshape.tres")
+
 func get_half_width():
 	match shape.get_class():
 		"RectangleShape2D":
