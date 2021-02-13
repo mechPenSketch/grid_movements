@@ -21,7 +21,7 @@ There are additional nodes unique to this plugin:
 * SnapboundTiles (extended from TileMap) - its cell size can be adjusted such that the grid step for snapping will also be automatically updated.
 * PlayingPiece (extended from Area2D) - a playing piece to be moved around a map of tiles.
 * ColShapePiece (extended from CollisionShape2D) - its shape size can be adjusted automatically based on changes to grid step.
-** ColShapePieceEx (extended from ColShapePiece) - use this to cover more than one tiles.
+  * ColShapePieceEx (extended from ColShapePiece) - use this to cover more than one tiles.
 * RayCastPiece (extended from Raycast2D) - where it can cast to depends on its direction (Vector2) in proportion to grid step.
 
 ## Caution
