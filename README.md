@@ -27,11 +27,6 @@ There are additional nodes unique to this plugin:
 ## Caution
 * In case of updates, back up "addon/config.cfg" to preserve your settings.
 
-## Contribution
-If you find this helpful, please support me financially so that I can earn a living making Godot Assets:
-
-[![ko-fi](https://www.ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/I3I1208SA)
-
 ## Author
 * mechPenSketch
 
