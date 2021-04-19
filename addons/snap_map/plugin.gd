@@ -6,7 +6,6 @@ var config
 const CONFIG_FILEPATH = "res://addons/snap_map/config.cfg"
 
 # CLASSES
-var affected_classes = ["SnapboundTiles", "RayCastPiece", "ColShapePiece", "PlayingPiece"]
 var current_node = null
 
 # CANVAS SNAP SETTINGS
@@ -16,6 +15,7 @@ var snap_spinbox
 var snap_step_x
 var snap_step_y
 var snap_ratio
+var snap_dialog_btn
 
 signal input_event
 
@@ -42,11 +42,7 @@ func _exit_tree():
 	disconnect("scene_changed", self, "_on_scene_changed")
 	get_tree().disconnect("node_added", self, "_on_node_added")
 	
-	# SIGNALS FROM OTHER NODES
-	disconnect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
-	
-func _input(event):
-	emit_signal("input_event", event)
+	snap_dialog_btn.disconnect("pressed", self, "_on_snap_settings_confirmed")
 	
 func _on_node_added(n):
 	
@@ -54,9 +50,6 @@ func _on_node_added(n):
 	set_node_params(n, "aspect_ratio", snap_ratio)
 	set_node_params(n, "cell_width", snap_step_x)
 	set_node_params(n, "cell_height", snap_step_y)
-	
-	# CONNECT NODE
-	connect_node(n, "input_event", affected_classes[3], "_plugin_input")
 
 func _on_param_changed(param, val, fc_nd=null):
 	match param:
@@ -88,33 +81,9 @@ func _on_scene_changed(scene_root):
 	set_node_params_then_children(get_tree().get_edited_scene_root(), "aspect_ratio", snap_ratio)
 	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_width", snap_step_x)
 	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_height", snap_step_y)
-	
-	# MASS CONNECT NODES
-	connect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
 
-func connect_node(n, s, c, m):
-	if n.is_class(c):
-		if !is_connected(s, n, m):
-			connect(s, n, m)
-	
-func connect_node_then_children(n, s, c, m):
-	connect_node(n, s, c, m)
-	
-	if n.get_child_count():
-		for ch in n.get_children():
-			connect_node_then_children(ch, s, c, m)
-
-func disconnect_node(n, s, c, m):
-	if n.is_class(c):
-		if is_connected(s, n, m):
-			disconnect(s, n, m)
-	
-func disconnect_node_then_children(n, s, c, m):
-	disconnect_node(n, s, c, m)
-	
-	if n.get_child_count():
-		for ch in n.get_children():
-			disconnect_node_then_children(ch, s, c, m)
+func _on_snap_settings_confirmed():
+	print("Snap OK")
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -136,8 +105,12 @@ func find_snap_controls():
 	
 	snap_spinbox = []
 	for child in recursive_get_children(snap_dialog):
-		if child.get_class() == "SpinBox":
+		if child is SpinBox:
 			snap_spinbox.append(child)
+			
+		if child is Button and child.get_text() == "OK":
+			snap_dialog_btn = child
+			snap_dialog_btn.connect("pressed", self, "_on_snap_settings_confirmed")
 
 func get_plugin_name():
 	return "Snap Map"
@@ -156,11 +129,8 @@ func handles(node):
 		current_node.disconnect("param_changed", self, "_on_param_changed")
 		current_node = null
 	
-	# IF NODE IS OR INHERITS FROM AFFECT CLASS
-	for str_cls in affected_classes:
-		if node.is_class(str_cls):
-			return true
-	return false
+	# IF NODE IS AFFECTED CLASS
+	return node is SnapboundTiles
 
 func recursive_get_children(node):
 	var children = node.get_children()
@@ -183,16 +153,14 @@ func save_external_data():
 
 func set_node_params(node, param, val):
 	# IF NODE IS OR INHERITS FROM AFFECT CLASS
-	for str_cls in affected_classes:
-		if node.is_class(str_cls):
-			match param:
-				"aspect_ratio":
-					node.plugset_aspect_ratio(val)
-				"cell_width":
-					node.plugset_cell_width(val)
-				"cell_height":
-					node.plugset_cell_height(val)
-			break
+	if node is SnapboundTiles:
+		match param:
+			"aspect_ratio":
+				node.plugset_aspect_ratio(val)
+			"cell_width":
+				node.plugset_cell_width(val)
+			"cell_height":
+				node.plugset_cell_height(val)
 
 func set_node_params_then_children(node, param, val):
 	set_node_params(node, param, val)
