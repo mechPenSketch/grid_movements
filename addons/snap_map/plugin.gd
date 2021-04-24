@@ -47,43 +47,22 @@ func _exit_tree():
 func _on_node_added(n):
 	
 	# SET SNAP SETTINGS ONTO ADDED NODE
-	set_node_params(n, "aspect_ratio", snap_ratio)
-	set_node_params(n, "cell_width", snap_step_x)
-	set_node_params(n, "cell_height", snap_step_y)
+	set_node_params(n)
 
-func _on_param_changed(param, val, fc_nd=null):
+func _on_param_changed(param, val):
 	match param:
-		"aspect_ratio":
-			snap_ratio = val
-		"cell_width", "cell_height":
-			var prev_val = get_snap_step_l(param)
-			set_snap_step_l(param, val)
-			
-			# AESPECT RATIO FACTOR
-			if snap_ratio:
-				var other_param = "cell_height" if param == "cell_width" else "cell_width"
-				var other_val = val
-				match snap_ratio:
-					1:
-						other_val = val
-					2:
-						other_val = current_node.get(other_param) * val / prev_val
-				set_snap_step_l(other_param, other_val)
-				set_node_params_then_children(get_tree().get_edited_scene_root(), other_param, other_val)
-				fc_nd.property_list_changed_notify()
-				
-	# MASS SETTING PARAM TO ALL AFFECT NODES
-	set_node_params_then_children(get_tree().get_edited_scene_root(), param, val)
+		"cell_size":
+			snap_spinbox[2].set_value(val.x)
+			snap_spinbox[3].set_value(val.y)
+			snap_dialog_btn.pressed()
 
 func _on_scene_changed(scene_root):
 	
 	# KEEP PARAMETERS UP-TO-DATE
-	set_node_params_then_children(get_tree().get_edited_scene_root(), "aspect_ratio", snap_ratio)
-	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_width", snap_step_x)
-	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_height", snap_step_y)
+	set_node_params_then_children(get_tree().get_edited_scene_root())
 
 func _on_snap_settings_confirmed():
-	print("Snap OK")
+	set_node_params_then_children(get_tree().get_edited_scene_root())
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -151,17 +130,17 @@ func save_external_data():
 	# OVERWRITTING FILE
 	config.save(CONFIG_FILEPATH)
 
-func set_node_params(node, param, val):
+func set_node_params(node):
 	# IF NODE IS SNAPBOUND TILES, SET ITS CELL SIZE BASED ON 	NEW SETTINGS
 	if node is SnapboundTiles:
-		node.set_cell_size(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()))
+		node.cell_size = Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value())
 
-func set_node_params_then_children(node, param, val):
-	set_node_params(node, param, val)
+func set_node_params_then_children(node):
+	set_node_params(node)
 	
 	if node.get_child_count():
 		for c in node.get_children():
-			set_node_params_then_children(c, param, val)
+			set_node_params_then_children(c)
 
 func set_snap_step_l(param, val):
 	match param:
