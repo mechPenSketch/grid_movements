@@ -152,15 +152,9 @@ func save_external_data():
 	config.save(CONFIG_FILEPATH)
 
 func set_node_params(node, param, val):
-	# IF NODE IS OR INHERITS FROM AFFECT CLASS
+	# IF NODE IS SNAPBOUND TILES, SET ITS CELL SIZE BASED ON 	NEW SETTINGS
 	if node is SnapboundTiles:
-		match param:
-			"aspect_ratio":
-				node.plugset_aspect_ratio(val)
-			"cell_width":
-				node.plugset_cell_width(val)
-			"cell_height":
-				node.plugset_cell_height(val)
+		node.set_cell_size(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()))
 
 func set_node_params_then_children(node, param, val):
 	set_node_params(node, param, val)
