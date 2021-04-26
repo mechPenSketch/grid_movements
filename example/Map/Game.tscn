@@ -28,9 +28,7 @@ script = ExtResource( 8 )
 [node name="Player" type="Area2D" parent="Grid"]
 position = Vector2( 352, 160 )
 script = ExtResource( 2 )
-grid_x = 5
-grid_y = 2
-raycast_directions = {
+dnp_raycast_directions = {
 Vector2( -1, 0 ): NodePath("Left"),
 Vector2( 0, -1 ): NodePath("Up"),
 Vector2( 0, 1 ): NodePath("Down"),
@@ -65,7 +63,6 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
-direction_ratio = Vector2( 0, -1 )
 
 [node name="Down" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( 0, 32 )
@@ -78,7 +75,6 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
-direction_ratio = Vector2( 0, 1 )
 
 [node name="Left" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( -32, 0 )
@@ -91,7 +87,6 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
-direction_ratio = Vector2( -1, 0 )
 
 [node name="Right" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( 32, 0 )
@@ -104,18 +99,13 @@ script = ExtResource( 9 )
 __meta__ = {
 "_edit_lock_": true
 }
-direction_ratio = Vector2( 1, 0 )
 
 [node name="Obstacle" parent="Grid" instance=ExtResource( 5 )]
 position = Vector2( 864, 480 )
-grid_x = 13
-grid_y = 7
 
 [node name="PlayingPiece" type="Area2D" parent="Grid"]
 position = Vector2( 224, 416 )
 script = ExtResource( 13 )
-grid_x = 3
-grid_y = 6
 
 [node name="Sprite" type="Sprite" parent="Grid/PlayingPiece"]
 texture = ExtResource( 11 )
