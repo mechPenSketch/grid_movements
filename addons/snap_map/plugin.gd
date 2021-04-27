@@ -1,15 +1,10 @@
 tool
 extends EditorPlugin
 
-# SAVE FILE
-var config
-const CONFIG_FILEPATH = "res://addons/snap_map/config.cfg"
-
 # CLASSES
 var current_node = null
 
 # CANVAS SNAP SETTINGS
-var save_file
 var snap_dialog
 var snap_spinbox
 var snap_step_x
@@ -20,14 +15,6 @@ var snap_dialog_btn
 signal input_event
 
 func _enter_tree():
-	
-	# LOAD SNAP SETTING(S)
-	config = ConfigFile.new()
-	var err = config.load(CONFIG_FILEPATH)
-	if err == OK:
-		snap_step_x = config.get_value("snap", "step_x")
-		snap_step_y = config.get_value("snap", "step_y")
-		snap_ratio = config.get_value("snap", "ratio")
 	
 	# DEFINE SNAP SETTINGS
 	set_snap_settings()
@@ -119,16 +106,6 @@ func recursive_get_children(node):
 		for child in children:
 			children += recursive_get_children(child)
 		return children
-
-# ON SAVING PROJECT
-func save_external_data():
-	# SET INTO CONFIG FILES
-	config.set_value("snap", "step_x", snap_step_x)
-	config.set_value("snap", "step_y", snap_step_y)
-	config.set_value("snap", "ratio", snap_ratio)
-	
-	# OVERWRITTING FILE
-	config.save(CONFIG_FILEPATH)
 
 func set_node_params(node):
 	# IF NODE IS SNAPBOUND TILES, SET ITS CELL SIZE BASED ON 	NEW SETTINGS
