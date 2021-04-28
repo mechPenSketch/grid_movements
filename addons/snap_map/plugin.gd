@@ -7,9 +7,8 @@ var current_node = null
 # CANVAS SNAP SETTINGS
 var snap_dialog
 var snap_spinbox
-var snap_step_x
-var snap_step_y
-var snap_ratio
+var snap_grid_step
+var snap_grid_offset
 var snap_dialog_btn
 
 signal input_event
@@ -80,13 +79,6 @@ func find_snap_controls():
 
 func get_plugin_name():
 	return "Snap Map"
-			
-func get_snap_step_l(param):
-	match param:
-		"cell_width":
-			return snap_step_x
-		"cell_height":
-			return snap_step_y
 
 # UPON A NODE BEING SELECTED,
 #	 CHECKS WHETHER IT SHOULD BE AFFECTED BY THIS PLUGIN
@@ -119,31 +111,11 @@ func set_node_params_then_children(node):
 		for c in node.get_children():
 			set_node_params_then_children(c)
 
-func set_snap_step_l(param, val):
-	match param:
-		"cell_width":
-			# SNAP STEP
-			snap_step_x = val
-			snap_spinbox[2].set_value(val)
-			
-			# OFFSET
-			snap_spinbox[0].set_value(snap_step_x / 2)
-		
-		"cell_height":
-			snap_step_y = val
-			snap_spinbox[3].set_value(val)
-			snap_spinbox[1].set_value(snap_step_y / 2)
-	
-	# SIMULATING PRESSING OK AFTER CONFIGURING SNAP SETTINGS
-	snap_dialog.get_ok().emit_signal("pressed")
-
 func set_snap_settings():
 	find_snap_controls()
 	
 	# OFFSET
-	snap_spinbox[0].set_value(snap_step_x / 2)
-	snap_spinbox[1].set_value(snap_step_y / 2)
+	snap_grid_offset = Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value())
 	
 	# SNAP STEP
-	snap_spinbox[2].set_value(snap_step_x)
-	snap_spinbox[3].set_value(snap_step_y)
+	snap_grid_step = Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value())
