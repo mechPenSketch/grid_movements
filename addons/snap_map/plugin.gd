@@ -25,6 +25,7 @@ func _enter_tree():
 		var child = children[i]
 		if child.get_class() == "SnapDialog":
 			snap_dialog = child
+			snap_dialog.connect("about_to_show", self, "_about_to_show_snapdialog")
 	
 	snap_spinbox = []
 	for child in recursive_get_children(snap_dialog):
@@ -72,6 +73,29 @@ func _on_scene_changed(scene_root):
 
 func _on_snap_settings_confirmed():
 	set_node_params_then_children(get_tree().get_edited_scene_root())
+
+func _about_to_show_snapdialog():
+	if snaps_not_loaded():
+		# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
+		var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
+	
+		# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
+		if first_snapbound_tiles:
+			# OFFSET
+			var offset = first_snapbound_tiles.get_children_offset()
+			snap_spinbox[0].set_value(offset.x)
+			snap_spinbox[1].set_value(offset.y)
+			
+			# SNAP STEP
+			var step = first_snapbound_tiles.get_cell_size()
+			snap_spinbox[2].set_value(step.x)
+			snap_spinbox[3].set_value(step.y)
+			
+			set_snap_settings(step, offset)
+		
+		# OTHERWISE, USE RECENTLY-SET SNAP SETTINGS
+		else:
+			set_snap_settings(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()), Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value()))
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -127,19 +151,21 @@ func set_node_params_then_children(node):
 		for c in node.get_children():
 			set_node_params_then_children(c)
 
+func set_snap_settings(step, offset = Vector2(0, 0)):
+	# OFFSET
+	snap_grid_offset = offset
+	
+	# SNAP STEP
+	snap_grid_step = step
+
 func set_snaps_from_first_snapbound():
 	
 	# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
 	var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
 	
-	# IF ANY,
+	# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
 	if first_snapbound_tiles:
-		
-		# OFFSET
-		snap_grid_offset = first_snapbound_tiles.get_children_offset()
-	
-		# SNAP STEP
-		snap_grid_step = first_snapbound_tiles.get_cell_size()
+		set_snap_settings(first_snapbound_tiles.get_cell_size(), first_snapbound_tiles.get_children_offset())
 
 func snaps_not_loaded()->bool:
 	return snap_grid_step == DEFAULT_STEP
