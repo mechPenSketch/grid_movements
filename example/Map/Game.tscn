@@ -28,6 +28,9 @@ script = ExtResource( 8 )
 [node name="Player" type="Area2D" parent="Grid"]
 position = Vector2( 352, 160 )
 script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
 dnp_raycast_directions = {
 Vector2( -1, 0 ): NodePath("Left"),
 Vector2( 0, -1 ): NodePath("Up"),
@@ -38,9 +41,6 @@ incoming = ExtResource( 7 )
 
 [node name="Sprite" type="Sprite" parent="Grid/Player"]
 texture = ExtResource( 3 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="Tween" type="Tween" parent="Grid/Player"]
 script = ExtResource( 4 )
@@ -48,9 +48,6 @@ script = ExtResource( 4 )
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Grid/Player"]
 shape = ExtResource( 6 )
 script = ExtResource( 10 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="Up" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( 0, -32 )
@@ -60,9 +57,6 @@ cast_to = Vector2( 0, -32 )
 collide_with_areas = true
 collide_with_bodies = false
 script = ExtResource( 9 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="Down" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( 0, 32 )
@@ -72,9 +66,6 @@ cast_to = Vector2( 0, 32 )
 collide_with_areas = true
 collide_with_bodies = false
 script = ExtResource( 9 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="Left" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( -32, 0 )
@@ -84,9 +75,6 @@ cast_to = Vector2( -32, 0 )
 collide_with_areas = true
 collide_with_bodies = false
 script = ExtResource( 9 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="Right" type="RayCast2D" parent="Grid/Player"]
 position = Vector2( 32, 0 )
@@ -96,9 +84,6 @@ cast_to = Vector2( 32, 0 )
 collide_with_areas = true
 collide_with_bodies = false
 script = ExtResource( 9 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="Obstacle" parent="Grid" instance=ExtResource( 5 )]
 position = Vector2( 864, 480 )
@@ -106,6 +91,9 @@ position = Vector2( 864, 480 )
 [node name="PlayingPiece" type="Area2D" parent="Grid"]
 position = Vector2( 224, 416 )
 script = ExtResource( 13 )
+__meta__ = {
+"_edit_group_": true
+}
 
 [node name="Sprite" type="Sprite" parent="Grid/PlayingPiece"]
 texture = ExtResource( 11 )
