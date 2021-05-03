@@ -13,19 +13,46 @@ var snap_grid_step = DEFAULT_STEP
 var snap_grid_offset = DEFAULT_OFFSET
 var snap_dialog_btn
 
+var ui_scenetree
+
 signal input_event
+
+func _about_to_show_snapdialog():
+	if snaps_not_loaded():
+		# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
+		var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
+	
+		# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
+		if first_snapbound_tiles:
+			# OFFSET
+			var offset = first_snapbound_tiles.get_children_offset()
+			snap_spinbox[0].set_value(offset.x)
+			snap_spinbox[1].set_value(offset.y)
+			
+			# SNAP STEP
+			var step = first_snapbound_tiles.get_cell_size()
+			snap_spinbox[2].set_value(step.x)
+			snap_spinbox[3].set_value(step.y)
+			
+			set_snap_settings(step, offset)
+		
+		# OTHERWISE, USE RECENTLY-SET SNAP SETTINGS
+		else:
+			set_snap_settings(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()), Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value()))
 
 func _enter_tree():
 	
 	# DEFINE SNAP SETTINGS
 	var base_control = get_editor_interface().get_base_control()
 	var children = recursive_get_children(base_control)
-
-	for i in children.size():
-		var child = children[i]
+	
+	for child in children:
 		if child.get_class() == "SnapDialog":
 			snap_dialog = child
 			snap_dialog.connect("about_to_show", self, "_about_to_show_snapdialog")
+			
+		elif child.get_class() == "SceneTreeDock":
+			ui_scenetree = child.get_child(child.get_child_count() - 1)
 	
 	snap_spinbox = []
 	for child in recursive_get_children(snap_dialog):
@@ -47,12 +74,24 @@ func _exit_tree():
 	get_tree().disconnect("node_added", self, "_on_node_added")
 	
 	snap_dialog_btn.disconnect("pressed", self, "_on_snap_settings_confirmed")
-	
+
 func _on_node_added(n):
 	
 	if !snaps_not_loaded():
 		# SET SNAP SETTINGS ONTO ADDED NODE
 		set_node_params(n)
+	
+	"""
+	if n is PlayingPiece:
+		for t in trees:
+			var le_root=t.get_root()
+			if le_root:
+				var me_children = le_root.get_children()
+				if me_children:
+					print(me_children.get_text(0))
+					#print(me_children.get_tooltip(0))
+					#print(le_root.get_children().get_tooltip())
+	"""
 
 func _on_param_changed(param, val):
 	match param:
@@ -77,29 +116,6 @@ func _on_scene_changed(scene_root):
 
 func _on_snap_settings_confirmed():
 	set_node_params_then_children(get_tree().get_edited_scene_root())
-
-func _about_to_show_snapdialog():
-	if snaps_not_loaded():
-		# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
-		var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
-	
-		# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
-		if first_snapbound_tiles:
-			# OFFSET
-			var offset = first_snapbound_tiles.get_children_offset()
-			snap_spinbox[0].set_value(offset.x)
-			snap_spinbox[1].set_value(offset.y)
-			
-			# SNAP STEP
-			var step = first_snapbound_tiles.get_cell_size()
-			snap_spinbox[2].set_value(step.x)
-			snap_spinbox[3].set_value(step.y)
-			
-			set_snap_settings(step, offset)
-		
-		# OTHERWISE, USE RECENTLY-SET SNAP SETTINGS
-		else:
-			set_snap_settings(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()), Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value()))
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
