@@ -14,6 +14,7 @@ var snap_grid_offset = DEFAULT_OFFSET
 var snap_dialog_btn
 
 var ui_scenetree
+var base_tooltips = {}
 
 signal input_event
 
@@ -81,9 +82,15 @@ func _exit_tree():
 	snap_dialog_btn.disconnect("pressed", self, "_on_snap_settings_confirmed")
 
 func _gui_scenetree_input(e):
+	
+	# IF THE INPUT EVENT IS MOUSE MOTION
 	if e is InputEventMouseMotion:
+		
+		# GET THE TREE ITEM MOUSED OVER
 		var tree_item = ui_scenetree.get_item_at_position(e.get_position())
 		if tree_item:
+			
+			# FIND THE NODE IT REPRESENTS
 			var cur_item = tree_item
 			var root_item = ui_scenetree.get_root()
 			var node_names = []
@@ -100,7 +107,24 @@ func _gui_scenetree_input(e):
 			if node_path:
 				var node = get_tree().get_edited_scene_root().get_node(node_path)
 				if node is PlayingPiece:
-					print(node)
+					
+					# FIND PARENT TILEMAP
+					var parent_tilemap = node
+					while parent_tilemap!=null and !(parent_tilemap is TileMap):
+						parent_tilemap = parent_tilemap.get_parent()
+					
+					if parent_tilemap:
+						# GET PLAYING PIECE'S GRID POSITION FROM PARENT TILEMAP
+						var grid_pos = parent_tilemap.world_to_map(node.get_global_position())
+						var tooltip_ln_grid_pos = "Grid Pos: " + String(grid_pos) + "\n"
+						
+						# STORE ORIGINAL TOOLTIP MESSAGE
+						if !base_tooltips.has(tree_item):
+							base_tooltips[tree_item] = tree_item.get_tooltip(0)
+						
+						# UPDATE TOOLTIP TO INCLUDE GRID POSITION
+						var new_tooltip = tooltip_ln_grid_pos + base_tooltips[tree_item]
+						tree_item.set_tooltip(0, new_tooltip)
 
 func _on_node_added(n):
 	
@@ -124,6 +148,9 @@ func _on_param_changed(param, val):
 	snap_dialog_btn.emit_signal("pressed")
 
 func _on_scene_changed(scene_root):
+	
+	# EMPTY BASE TOOLTIPS
+	base_tooltips = {}
 	
 	# IF SNAP SETTINGS HAVE BEEN CALLED EARLIER
 	if snaps_not_loaded():
