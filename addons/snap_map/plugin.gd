@@ -84,7 +84,23 @@ func _gui_scenetree_input(e):
 	if e is InputEventMouseMotion:
 		var tree_item = ui_scenetree.get_item_at_position(e.get_position())
 		if tree_item:
-			print(tree_item.get_text(0))
+			var cur_item = tree_item
+			var root_item = ui_scenetree.get_root()
+			var node_names = []
+			
+			while(cur_item != root_item):
+				node_names.push_front(cur_item.get_text(0))
+				cur_item = cur_item.get_parent()
+				
+			var node_path = ""
+			for i in node_names.size():
+				if i > 0: node_path += "/"
+				node_path += node_names[i]
+				
+			if node_path:
+				var node = get_tree().get_edited_scene_root().get_node(node_path)
+				if node is PlayingPiece:
+					print(node)
 
 func _on_node_added(n):
 	
