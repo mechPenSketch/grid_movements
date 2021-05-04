@@ -46,13 +46,18 @@ func _enter_tree():
 	var base_control = get_editor_interface().get_base_control()
 	var children = recursive_get_children(base_control)
 	
+	var potential_trees = []
+	
 	for child in children:
 		if child.get_class() == "SnapDialog":
 			snap_dialog = child
 			snap_dialog.connect("about_to_show", self, "_about_to_show_snapdialog")
+		
+		elif child is Tree:
+			potential_trees.append(child)
 			
-		elif child.get_class() == "SceneTreeDock":
-			ui_scenetree = child.get_child(child.get_child_count() - 1)
+	ui_scenetree = potential_trees[1]
+	ui_scenetree.connect("gui_input", self, "_gui_scenetree_input")
 	
 	snap_spinbox = []
 	for child in recursive_get_children(snap_dialog):
@@ -75,23 +80,21 @@ func _exit_tree():
 	
 	snap_dialog_btn.disconnect("pressed", self, "_on_snap_settings_confirmed")
 
+func _gui_scenetree_input(e):
+	if e is InputEventMouseMotion:
+		var tree_item = ui_scenetree.get_item_at_position(e.get_position())
+		if tree_item:
+			print(tree_item.get_text(0))
+
 func _on_node_added(n):
 	
 	if !snaps_not_loaded():
 		# SET SNAP SETTINGS ONTO ADDED NODE
 		set_node_params(n)
 	
-	"""
 	if n is PlayingPiece:
-		for t in trees:
-			var le_root=t.get_root()
-			if le_root:
-				var me_children = le_root.get_children()
-				if me_children:
-					print(me_children.get_text(0))
-					#print(me_children.get_tooltip(0))
-					#print(le_root.get_children().get_tooltip())
-	"""
+		if ui_scenetree.get_root():
+			print(ui_scenetree.get_root())
 
 func _on_param_changed(param, val):
 	match param:
