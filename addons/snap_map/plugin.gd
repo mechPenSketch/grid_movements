@@ -75,6 +75,11 @@ func _enter_tree():
 
 func _exit_tree():
 	
+	# RESET PLAYING PIECES' TOOLTIPS TO NORMAL
+	for k in base_tooltips.keys():
+		k.set_tooltip(0, base_tooltips[k])
+	base_tooltips = {}
+	
 	# SELF-SIGNALS
 	disconnect("scene_changed", self, "_on_scene_changed")
 	get_tree().disconnect("node_added", self, "_on_node_added")
