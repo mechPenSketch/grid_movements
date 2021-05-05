@@ -1,36 +1,73 @@
 tool
 extends EditorPlugin
 
-# SAVE FILE
-var config
-const CONFIG_FILEPATH = "res://addons/snap_map/config.cfg"
-
 # CLASSES
-var affected_classes = ["SnapboundTiles", "RayCastPiece", "ColShapePiece", "PlayingPiece"]
 var current_node = null
 
 # CANVAS SNAP SETTINGS
-var save_file
 var snap_dialog
 var snap_spinbox
-var snap_step_x
-var snap_step_y
-var snap_ratio
+const DEFAULT_OFFSET = Vector2()
+const DEFAULT_STEP = Vector2(0.01, 0.01)
+var snap_grid_step = DEFAULT_STEP
+var snap_grid_offset = DEFAULT_OFFSET
+var snap_dialog_btn
+
+var ui_scenetree
+var base_tooltips = {}
 
 signal input_event
 
+func _about_to_show_snapdialog():
+	if snaps_not_loaded():
+		# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
+		var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
+	
+		# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
+		if first_snapbound_tiles:
+			# OFFSET
+			var offset = first_snapbound_tiles.get_children_offset()
+			snap_spinbox[0].set_value(offset.x)
+			snap_spinbox[1].set_value(offset.y)
+			
+			# SNAP STEP
+			var step = first_snapbound_tiles.get_cell_size()
+			snap_spinbox[2].set_value(step.x)
+			snap_spinbox[3].set_value(step.y)
+			
+			set_snap_settings(step, offset)
+		
+		# OTHERWISE, USE RECENTLY-SET SNAP SETTINGS
+		else:
+			set_snap_settings(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()), Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value()))
+
 func _enter_tree():
 	
-	# LOAD SNAP SETTING(S)
-	config = ConfigFile.new()
-	var err = config.load(CONFIG_FILEPATH)
-	if err == OK:
-		snap_step_x = config.get_value("snap", "step_x")
-		snap_step_y = config.get_value("snap", "step_y")
-		snap_ratio = config.get_value("snap", "ratio")
-	
 	# DEFINE SNAP SETTINGS
-	set_snap_settings()
+	var base_control = get_editor_interface().get_base_control()
+	var children = recursive_get_children(base_control)
+	
+	var potential_trees = []
+	
+	for child in children:
+		if child.get_class() == "SnapDialog":
+			snap_dialog = child
+			snap_dialog.connect("about_to_show", self, "_about_to_show_snapdialog")
+		
+		elif child is Tree:
+			potential_trees.append(child)
+			
+	ui_scenetree = potential_trees[1]
+	ui_scenetree.connect("gui_input", self, "_gui_scenetree_input")
+	
+	snap_spinbox = []
+	for child in recursive_get_children(snap_dialog):
+		if child is SpinBox:
+			snap_spinbox.append(child)
+			
+		if child is Button and child.get_text() == "OK":
+			snap_dialog_btn = child
+			snap_dialog_btn.connect("pressed", self, "_on_snap_settings_confirmed")
 	
 	# SELF-SIGNALS
 	connect("scene_changed", self, "_on_scene_changed")
@@ -38,83 +75,98 @@ func _enter_tree():
 
 func _exit_tree():
 	
+	# RESET PLAYING PIECES' TOOLTIPS TO NORMAL
+	for k in base_tooltips.keys():
+		k.set_tooltip(0, base_tooltips[k])
+	base_tooltips = {}
+	
 	# SELF-SIGNALS
 	disconnect("scene_changed", self, "_on_scene_changed")
 	get_tree().disconnect("node_added", self, "_on_node_added")
 	
-	# SIGNALS FROM OTHER NODES
-	disconnect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
+	snap_dialog_btn.disconnect("pressed", self, "_on_snap_settings_confirmed")
+
+func _gui_scenetree_input(e):
 	
-func _input(event):
-	emit_signal("input_event", event)
-	
+	# IF THE INPUT EVENT IS MOUSE MOTION
+	if e is InputEventMouseMotion:
+		
+		# GET THE TREE ITEM MOUSED OVER
+		var tree_item = ui_scenetree.get_item_at_position(e.get_position())
+		if tree_item:
+			
+			# FIND THE NODE IT REPRESENTS
+			var cur_item = tree_item
+			var root_item = ui_scenetree.get_root()
+			var node_names = []
+			
+			while(cur_item != root_item):
+				node_names.push_front(cur_item.get_text(0))
+				cur_item = cur_item.get_parent()
+				
+			var node_path = ""
+			for i in node_names.size():
+				if i > 0: node_path += "/"
+				node_path += node_names[i]
+				
+			if node_path:
+				var node = get_tree().get_edited_scene_root().get_node(node_path)
+				if node is PlayingPiece:
+					
+					# FIND PARENT TILEMAP
+					var parent_tilemap = node
+					while parent_tilemap!=null and !(parent_tilemap is TileMap):
+						parent_tilemap = parent_tilemap.get_parent()
+					
+					if parent_tilemap:
+						# GET PLAYING PIECE'S GRID POSITION FROM PARENT TILEMAP
+						var grid_pos = parent_tilemap.world_to_map(node.get_global_position())
+						var tooltip_ln_grid_pos = "Grid Pos: " + String(grid_pos) + "\n"
+						
+						# STORE ORIGINAL TOOLTIP MESSAGE
+						if !base_tooltips.has(tree_item):
+							base_tooltips[tree_item] = tree_item.get_tooltip(0)
+						
+						# UPDATE TOOLTIP TO INCLUDE GRID POSITION
+						var new_tooltip = tooltip_ln_grid_pos + base_tooltips[tree_item]
+						tree_item.set_tooltip(0, new_tooltip)
+
 func _on_node_added(n):
 	
-	# SET SNAP SETTINGS ONTO ADDED NODE
-	set_node_params(n, "aspect_ratio", snap_ratio)
-	set_node_params(n, "cell_width", snap_step_x)
-	set_node_params(n, "cell_height", snap_step_y)
+	if !snaps_not_loaded():
+		# SET SNAP SETTINGS ONTO ADDED NODE
+		set_node_params(n)
 	
-	# CONNECT NODE
-	connect_node(n, "input_event", affected_classes[3], "_plugin_input")
+	if n is PlayingPiece:
+		if ui_scenetree.get_root():
+			print(ui_scenetree.get_root())
 
-func _on_param_changed(param, val, fc_nd=null):
+func _on_param_changed(param, val):
 	match param:
-		"aspect_ratio":
-			snap_ratio = val
-		"cell_width", "cell_height":
-			var prev_val = get_snap_step_l(param)
-			set_snap_step_l(param, val)
+		"cell_size":
+			snap_spinbox[2].set_value(val.x)
+			snap_spinbox[3].set_value(val.y)
+		"children_offset":
+			snap_spinbox[0].set_value(val.x)
+			snap_spinbox[1].set_value(val.y)
 			
-			# AESPECT RATIO FACTOR
-			if snap_ratio:
-				var other_param = "cell_height" if param == "cell_width" else "cell_width"
-				var other_val = val
-				match snap_ratio:
-					1:
-						other_val = val
-					2:
-						other_val = current_node.get(other_param) * val / prev_val
-				set_snap_step_l(other_param, other_val)
-				set_node_params_then_children(get_tree().get_edited_scene_root(), other_param, other_val)
-				fc_nd.property_list_changed_notify()
-				
-	# MASS SETTING PARAM TO ALL AFFECT NODES
-	set_node_params_then_children(get_tree().get_edited_scene_root(), param, val)
+	snap_dialog_btn.emit_signal("pressed")
 
 func _on_scene_changed(scene_root):
 	
+	# EMPTY BASE TOOLTIPS
+	base_tooltips = {}
+	
+	# IF SNAP SETTINGS HAVE BEEN CALLED EARLIER
+	if snaps_not_loaded():
+		set_snaps_from_first_snapbound()
+	
+	else:
 	# KEEP PARAMETERS UP-TO-DATE
-	set_node_params_then_children(get_tree().get_edited_scene_root(), "aspect_ratio", snap_ratio)
-	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_width", snap_step_x)
-	set_node_params_then_children(get_tree().get_edited_scene_root(), "cell_height", snap_step_y)
-	
-	# MASS CONNECT NODES
-	connect_node_then_children(get_tree().get_edited_scene_root(), "input_event", affected_classes[3], "_plugin_input")
+		set_node_params_then_children(get_tree().get_edited_scene_root())
 
-func connect_node(n, s, c, m):
-	if n.is_class(c):
-		if !is_connected(s, n, m):
-			connect(s, n, m)
-	
-func connect_node_then_children(n, s, c, m):
-	connect_node(n, s, c, m)
-	
-	if n.get_child_count():
-		for ch in n.get_children():
-			connect_node_then_children(ch, s, c, m)
-
-func disconnect_node(n, s, c, m):
-	if n.is_class(c):
-		if is_connected(s, n, m):
-			disconnect(s, n, m)
-	
-func disconnect_node_then_children(n, s, c, m):
-	disconnect_node(n, s, c, m)
-	
-	if n.get_child_count():
-		for ch in n.get_children():
-			disconnect_node_then_children(ch, s, c, m)
+func _on_snap_settings_confirmed():
+	set_node_params_then_children(get_tree().get_edited_scene_root())
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -125,29 +177,18 @@ func edit(node):
 		# CONNECT SELECTED NODE
 		node.connect("param_changed", self, "_on_param_changed")
 
-func find_snap_controls():
-	var base_control = get_editor_interface().get_base_control()
-	var children = recursive_get_children(base_control)
-
-	for i in children.size():
-		var child = children[i]
-		if child.get_class() == "SnapDialog":
-			snap_dialog = child
-	
-	snap_spinbox = []
-	for child in recursive_get_children(snap_dialog):
-		if child.get_class() == "SpinBox":
-			snap_spinbox.append(child)
+func get_first_snapbound_tiles(node):
+	if node is SnapboundTiles:
+		return node
+	else:
+		if node.get_child_count():
+			for c in node.get_children():
+				get_first_snapbound_tiles(c)
+		else:
+			return null
 
 func get_plugin_name():
 	return "Snap Map"
-			
-func get_snap_step_l(param):
-	match param:
-		"cell_width":
-			return snap_step_x
-		"cell_height":
-			return snap_step_y
 
 # UPON A NODE BEING SELECTED,
 #	 CHECKS WHETHER IT SHOULD BE AFFECTED BY THIS PLUGIN
@@ -156,11 +197,8 @@ func handles(node):
 		current_node.disconnect("param_changed", self, "_on_param_changed")
 		current_node = null
 	
-	# IF NODE IS OR INHERITS FROM AFFECT CLASS
-	for str_cls in affected_classes:
-		if node.is_class(str_cls):
-			return true
-	return false
+	# IF NODE IS AFFECTED CLASS
+	return node is SnapboundTiles
 
 func recursive_get_children(node):
 	var children = node.get_children()
@@ -171,61 +209,34 @@ func recursive_get_children(node):
 			children += recursive_get_children(child)
 		return children
 
-# ON SAVING PROJECT
-func save_external_data():
-	# SET INTO CONFIG FILES
-	config.set_value("snap", "step_x", snap_step_x)
-	config.set_value("snap", "step_y", snap_step_y)
-	config.set_value("snap", "ratio", snap_ratio)
-	
-	# OVERWRITTING FILE
-	config.save(CONFIG_FILEPATH)
+func set_node_params(node):
+	# IF NODE IS SNAPBOUND TILES
+	if node is SnapboundTiles:
+		# SET ITS CELL SIZE BASED ON NEW SETTINGS
+		node.cell_size = snap_grid_step
 
-func set_node_params(node, param, val):
-	# IF NODE IS OR INHERITS FROM AFFECT CLASS
-	for str_cls in affected_classes:
-		if node.is_class(str_cls):
-			match param:
-				"aspect_ratio":
-					node.plugset_aspect_ratio(val)
-				"cell_width":
-					node.plugset_cell_width(val)
-				"cell_height":
-					node.plugset_cell_height(val)
-			break
-
-func set_node_params_then_children(node, param, val):
-	set_node_params(node, param, val)
+func set_node_params_then_children(node):
+	set_node_params(node)
 	
 	if node.get_child_count():
 		for c in node.get_children():
-			set_node_params_then_children(c, param, val)
+			set_node_params_then_children(c)
 
-func set_snap_step_l(param, val):
-	match param:
-		"cell_width":
-			# SNAP STEP
-			snap_step_x = val
-			snap_spinbox[2].set_value(val)
-			
-			# OFFSET
-			snap_spinbox[0].set_value(snap_step_x / 2)
-		
-		"cell_height":
-			snap_step_y = val
-			snap_spinbox[3].set_value(val)
-			snap_spinbox[1].set_value(snap_step_y / 2)
-	
-	# SIMULATING PRESSING OK AFTER CONFIGURING SNAP SETTINGS
-	snap_dialog.get_ok().emit_signal("pressed")
-
-func set_snap_settings():
-	find_snap_controls()
-	
+func set_snap_settings(step, offset = Vector2(0, 0)):
 	# OFFSET
-	snap_spinbox[0].set_value(snap_step_x / 2)
-	snap_spinbox[1].set_value(snap_step_y / 2)
+	snap_grid_offset = offset
 	
 	# SNAP STEP
-	snap_spinbox[2].set_value(snap_step_x)
-	snap_spinbox[3].set_value(snap_step_y)
+	snap_grid_step = step
+
+func set_snaps_from_first_snapbound():
+	
+	# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
+	var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
+	
+	# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
+	if first_snapbound_tiles:
+		set_snap_settings(first_snapbound_tiles.get_cell_size(), first_snapbound_tiles.get_children_offset())
+
+func snaps_not_loaded()->bool:
+	return snap_grid_step == DEFAULT_STEP

@@ -18,11 +18,13 @@ func set_anchor(val):
 		_:
 			# HORIZONTAL ALIGN COMPARISON
 			if prev_val % 3 != val % 3:
-				set_anchor_pos_x()
+				#set_anchor_pos_x()
+				pass
 			
 			# VERTICAL ALIGN COMPARISON
 			if prev_val / 3 != val / 3:
-				set_anchor_pos_y()
+				#set_anchor_pos_y()
+				pass
 		
 	if prev_val != val:
 		property_list_changed_notify()
@@ -31,39 +33,14 @@ func set_anchor(val):
 func set_grid_width(val):
 	if val > 0:
 		grid_width = val
-		set_shape_width()
+		#set_shape_width()
 
 func set_grid_height(val):
 	if val > 0:
 		grid_height = val
-		set_shape_height()
-
-# SHAPES DATA
-
-func create_new_shape():
-	return RectangleShape2D.new()
-
-func is_not_aligned_center_x():
-	return anchor % 3 != 1
-
-func is_not_aligned_center_y():
-	return anchor / 3 != 1
-
-func set_rect_width():
-	shape.extents.x = cell_width / 2 * (grid_width - 0.5)
-	if is_not_aligned_center_x():
-		set_anchor_pos_x()
-
-func set_rect_height():
-	shape.extents.y = cell_height / 2 * (grid_height - 0.5)
-	if is_not_aligned_center_y():
-		set_anchor_pos_y()
-	
-func set_circle_r():
-	shape.radius = cell_width / 2 * (grid_width - 0.5)
-	if is_not_aligned_center_x():
-		set_anchor_pos_x()
-
+		#set_shape_height()
+		
+"""
 func set_anchor_pos_x():
 	match anchor % 3:
 		1:
@@ -87,3 +64,4 @@ func set_anchor_pos_y():
 		_:
 			# TOP
 			position.y = get_half_height() - cell_height / 4
+"""

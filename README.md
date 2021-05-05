@@ -14,7 +14,7 @@ After downloading, copy the folder "addons/snap_map" to your project file. On yo
 ## Usage
 
 ### Example
-The scene contains a player (green) and an obstacle (orange). The player can move in any direction, using arrow keys. The obstacle blocks the player's way.
+The scene contains a player (green) and 2 obstacles (orange and purple). The player can move in any direction, using arrow keys. The obstacle blocks the player's way.
 
 ### Plugin
 There are additional nodes unique to this plugin:
@@ -24,8 +24,7 @@ There are additional nodes unique to this plugin:
   * ColShapePieceEx (extended from ColShapePiece) - use this to cover more than one tiles.
 * RayCastPiece (extended from Raycast2D) - where it can cast to depends on its direction (Vector2) in proportion to grid step.
 
-## Caution
-* In case of updates, back up "addon/config.cfg" to preserve your settings.
+If a PlayingPiece has a TileMap as its parent, its grid position can be viewed. To find the grid position, go to the Scene Dock, and on the Scene Tree, mouse over the PlayingPiece.
 
 ## Author
 * mechPenSketch

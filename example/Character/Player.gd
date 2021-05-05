@@ -14,7 +14,8 @@ var tween
 var target_pos = Vector2()
 var blocks = []
 var is_blocked:bool = false
-export (Dictionary) var raycast_directions
+export (Dictionary) var dnp_raycast_directions
+var raycast_directions = {}
 var raycast
 export (Resource) var incoming
 signal incoming_gone
@@ -27,6 +28,8 @@ func _ready():
 	
 		tween = $Tween
 		tween.connect_into(self)
+		for k in dnp_raycast_directions.keys():
+			raycast_directions[k] = get_node(dnp_raycast_directions[k])
 		turn(Vector2(0,1))
 
 func _input(event):
@@ -46,9 +49,7 @@ func _input(event):
 		turn(direction)
 		
 		if !raycast.is_colliding():
-			grid_x += direction.x
-			grid_y += direction.y
-			target_pos = get_position() + direction * Vector2(cell_width, cell_height)
+			target_pos = get_position() + raycast.get_position() + raycast.get_cast_to()
 			
 			# ADD INCOMING BLOCK
 			var new_incoming = incoming.instance()
@@ -73,4 +74,4 @@ func _on_area_exited(a):
 	is_blocked = blocks.size()
 
 func turn(dir:Vector2):
-	raycast = get_node(raycast_directions[dir])
+	raycast = raycast_directions[dir]
