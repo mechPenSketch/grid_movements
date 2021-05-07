@@ -135,7 +135,7 @@ func _on_node_added(n):
 	
 	if !snaps_not_loaded():
 		# SET SNAP SETTINGS ONTO ADDED NODE
-		set_node_params(n)
+		set_sbt_params(n)
 	
 	if n is PlayingPiece:
 		if ui_scenetree.get_root():
@@ -163,10 +163,12 @@ func _on_scene_changed(scene_root):
 	
 	else:
 	# KEEP PARAMETERS UP-TO-DATE
-		set_node_params_then_children(get_tree().get_edited_scene_root())
+		set_node_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
 
 func _on_snap_settings_confirmed():
-	set_node_params_then_children(get_tree().get_edited_scene_root())
+	set_snap_settings(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()), Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value()))
+
+	set_node_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -209,18 +211,50 @@ func recursive_get_children(node):
 			children += recursive_get_children(child)
 		return children
 
-func set_node_params(node):
+func set_sbt_params(node):
 	# IF NODE IS SNAPBOUND TILES
 	if node is SnapboundTiles:
-		# SET ITS CELL SIZE BASED ON NEW SETTINGS
+		# SET THE FOLLOWING BASED ON NEW SETTINGS
+		#	CELL SIZE
 		node.cell_size = snap_grid_step
+		
+		#	CHILDREN OFFSET
+		node.children_offset = snap_grid_offset
+		
+		# REPOSITION CHILDREN PLAYING PIECES BASED ON NEW CHILDREN OFFSET
+		set_node_params_then_children(node, "PlayingPiece", node)
 
-func set_node_params_then_children(node):
-	set_node_params(node)
+func set_pp_params(node, sp):
+	# IF NODE IS PLAYING PIECE
+	if node is PlayingPiece:
+		# GET GRID POSITION FROM STARTING PARENT
+		var wtm = sp.world_to_map(node.get_global_position())
+		
+		# THEN POSITION WITHOUT OFFSET
+		var mtw = sp.map_to_world(wtm)
+		
+		# FINALLY, SET POSITION BASED ON NEW OFFSET
+		node.set_position(mtw + sp.get_children_offset())
+
+func set_node_params_then_children(node, cn, sp=null):
+	# INPUTS:
+	#	NODE
+	#	CLASS NAME
+	#	STARTING PARENT (DEFAULT: NULL)
+	
+	match cn:
+		"SnapboundTiles":
+			set_sbt_params(node)
+		"PlayingPiece":
+			# STOP THIS METHOD IS THE NODE EXTENDS FROM TILE MAP
+			if node is TileMap:
+				return
+			else:
+				set_pp_params(node, sp)
 	
 	if node.get_child_count():
 		for c in node.get_children():
-			set_node_params_then_children(c)
+			set_node_params_then_children(c, cn, sp)
 
 func set_snap_settings(step, offset = Vector2(0, 0)):
 	# OFFSET
