@@ -135,7 +135,8 @@ func _on_node_added(n):
 	
 	if !snaps_not_loaded():
 		# SET SNAP SETTINGS ONTO ADDED NODE
-		set_node_params(n)
+		if n is SnapboundTiles:
+			set_sbt_params(n)
 	
 	if n is PlayingPiece:
 		if ui_scenetree.get_root():
@@ -165,10 +166,10 @@ func _on_scene_changed(scene_root):
 	
 	else:
 	# KEEP PARAMETERS UP-TO-DATE
-		set_node_params_then_children(get_tree().get_edited_scene_root())
+		set_node_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
 
 func _on_snap_settings_confirmed():
-	set_node_params_then_children(get_tree().get_edited_scene_root())
+	set_node_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -214,14 +215,11 @@ func recursive_get_children(node):
 			children += recursive_get_children(child)
 		return children
 
-func set_node_params(node):
+func set_sbt_params(node):
 	# IF NODE IS SNAPBOUND TILES
 	if node is SnapboundTiles:
 		# SET ITS CELL SIZE BASED ON NEW SETTINGS
 		node.cell_size = snap_grid_step
-
-func set_node_params_then_children(node):
-	set_node_params(node)
 
 func set_pp_params(node, sp):
 	# IF NODE IS PLAYING PIECE
@@ -261,7 +259,7 @@ func set_node_params_then_children(node, cn, sp=null):
 	
 	if node.get_child_count():
 		for c in node.get_children():
-			set_node_params_then_children(c)
+			set_node_params_then_children(c, cn, sp)
 
 func set_snap_settings(step, offset = Vector2(0, 0)):
 	# OFFSET
