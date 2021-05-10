@@ -115,9 +115,7 @@ func _gui_scenetree_input(e):
 				if node is PlayingPiece:
 					
 					# FIND PARENT TILEMAP
-					var parent_tilemap = node
-					while parent_tilemap!=null and !(parent_tilemap is TileMap):
-						parent_tilemap = parent_tilemap.get_parent()
+					var parent_tilemap = get_parent_tilemap(node)
 					
 					if parent_tilemap:
 						# GET PLAYING PIECE'S GRID POSITION FROM PARENT TILEMAP
@@ -166,7 +164,12 @@ func _on_param_changed(param, val):
 			snap_spinbox[1].set_value(val.y)
 			snap_dialog_btn.emit_signal("pressed")
 		"direction_ratio":
-			current_node.plugset_direction(snap_grid_step)
+			var parent = current_node.get_parent()
+			if parent and parent is PlayingPiece:
+				var parent_tilemap = get_parent_tilemap(parent)
+				
+				if parent_tilemap:
+					current_node.plugset_direction(parent_tilemap.get_cell_size())
 
 func _on_scene_changed(scene_root):
 	
@@ -195,6 +198,16 @@ func edit(node):
 		
 	# SET CURRENT NODE
 	current_node = node
+
+func get_parent_tilemap(node):
+	if node is TileMap:
+		return node
+	else:
+		var parent = node.get_parent()
+		if parent:
+			return get_parent_tilemap(parent)
+		else:
+			return null
 
 func get_first_snapbound_tiles(node):
 	if node is SnapboundTiles:
