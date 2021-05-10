@@ -18,29 +18,6 @@ var base_tooltips = {}
 
 signal input_event
 
-func _about_to_show_snapdialog():
-	if snaps_not_loaded():
-		# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
-		var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
-	
-		# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
-		if first_snapbound_tiles:
-			# OFFSET
-			var offset = first_snapbound_tiles.get_children_offset()
-			snap_spinbox[0].set_value(offset.x)
-			snap_spinbox[1].set_value(offset.y)
-			
-			# SNAP STEP
-			var step = first_snapbound_tiles.get_cell_size()
-			snap_spinbox[2].set_value(step.x)
-			snap_spinbox[3].set_value(step.y)
-			
-			set_snap_settings(step, offset)
-		
-		# OTHERWISE, USE RECENTLY-SET SNAP SETTINGS
-		else:
-			set_snap_settings(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()), Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value()))
-
 func _enter_tree():
 	
 	# DEFINE SNAP SETTINGS
@@ -53,7 +30,6 @@ func _enter_tree():
 	for child in children:
 		if child.get_class() == "SnapDialog":
 			snap_dialog = child
-			snap_dialog.connect("about_to_show", self, "_about_to_show_snapdialog")
 		
 		elif child is Tree:
 			potential_trees.append(child)
@@ -177,11 +153,8 @@ func _on_scene_changed(scene_root):
 	base_tooltips = {}
 	
 	# IF SNAP SETTINGS HAVE BEEN CALLED EARLIER
-	if snaps_not_loaded():
-		set_snaps_from_first_snapbound()
-	
-	else:
-	# KEEP PARAMETERS UP-TO-DATE
+	if !snaps_not_loaded():
+		# KEEP PARAMETERS UP-TO-DATE
 		set_node_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
 
 func _on_snap_settings_confirmed():
@@ -222,16 +195,6 @@ func get_parent_tilemap(node):
 		var parent = node.get_parent()
 		if parent:
 			return get_parent_tilemap(parent)
-		else:
-			return null
-
-func get_first_snapbound_tiles(node):
-	if node is SnapboundTiles:
-		return node
-	else:
-		if node.get_child_count():
-			for c in node.get_children():
-				get_first_snapbound_tiles(c)
 		else:
 			return null
 
@@ -309,15 +272,6 @@ func set_snap_settings(step, offset = Vector2(0, 0)):
 	
 	# SNAP STEP
 	snap_grid_step = step
-
-func set_snaps_from_first_snapbound():
-	
-	# GET THE FIRST SNAPBOUND_TILES FROM SCENE TREE
-	var first_snapbound_tiles = get_first_snapbound_tiles(get_tree().get_edited_scene_root())
-	
-	# IF ANY, SET SNAP SETTINGS BASED ON THE FIRST SNAPBOUND_TILES
-	if first_snapbound_tiles:
-		set_snap_settings(first_snapbound_tiles.get_cell_size(), first_snapbound_tiles.get_children_offset())
 
 func snaps_not_loaded()->bool:
 	return snap_grid_step == DEFAULT_STEP
