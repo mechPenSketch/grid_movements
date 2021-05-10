@@ -199,6 +199,22 @@ func edit(node):
 	# SET CURRENT NODE
 	current_node = node
 
+func get_children_playing_pieces_grids(node, tile_parent):
+	var dict = {}
+	
+	# RETURN EMPTY DICTIONARY IF THE NODE EXTENDS FROM TILE MAP
+	if node != tile_parent and node is TileMap:
+		return {}
+	elif node is PlayingPiece:
+		dict[node] = tile_parent.world_to_map(node.get_global_position())
+	
+	for c in node.get_children():
+		var c_dict = get_children_playing_pieces_grids(c, tile_parent)
+		for k in c_dict.keys():
+			dict[k] = c_dict[k]
+		
+	return dict
+
 func get_parent_tilemap(node):
 	if node is TileMap:
 		return node
@@ -243,32 +259,35 @@ func recursive_get_children(node):
 
 func set_sbt_params(node):
 	# IF NODE IS SNAPBOUND TILES
-	if node is SnapboundTiles and node != current_node:
-		# SET ITS CELL SIZE BASED ON NEW SETTINGS
-		node.plugset_cell_size(snap_grid_step)
+	if node is SnapboundTiles:
+		# PREPARE CHILDREN PLAYING PIECES' GRID POSITIONS
+		var children_grids = get_children_playing_pieces_grids(node, node)
 		
-		# THEN CHILDREN OFFSET
-		node.plugset_children_offset(snap_grid_offset)
+		if node != current_node:
+			# SET ITS CELL SIZE BASED ON NEW SETTINGS
+			node.plugset_cell_size(snap_grid_step)
+		
+			# THEN CHILDREN OFFSET
+			node.plugset_children_offset(snap_grid_offset)
+		
+		# SET CHILDREN COMPONENT
+		for k in children_grids.keys():
+			set_pp_params(k, children_grids[k], node)
 
-func set_pp_params(node, sp):
-	# IF NODE IS PLAYING PIECE
-	if node is PlayingPiece:
-		# REPOSITIONING
-		#	GET GRID POSITION FROM STARTING PARENT
-		var wtm = sp.world_to_map(node.get_global_position())
-		
-		#	THEN POSITION WITHOUT OFFSET
-		var mtw = sp.map_to_world(wtm)
-		
-		#	FINALLY, SET POSITION BASED ON NEW OFFSET
-		node.set_position(mtw + sp.get_children_offset())
-		
-		# SETTING ITS CHILDREN COMPONENETS
-		for c in node.get_children():
-			if c is RayCastPiece:
-				c.plugset_direction(snap_grid_step)
-			elif c is ColShapePieceEx:
-				pass
+func set_pp_params(node, grid, sp):
+	# REPOSITIONING
+	#	SET POSITION FROM GRID
+	var mtw = sp.map_to_world(grid)
+	
+	#	THEN APPLY OFFSET
+	node.set_position(mtw + sp.get_children_offset())
+	
+	# SETTING ITS CHILDREN COMPONENETS
+	for c in node.get_children():
+		if c is RayCastPiece:
+			c.plugset_direction(snap_grid_step)
+		elif c is ColShapePieceEx:
+			pass
 
 func set_node_params_then_children(node, cn, sp=null):
 	# INPUTS:
@@ -279,12 +298,6 @@ func set_node_params_then_children(node, cn, sp=null):
 	match cn:
 		"SnapboundTiles":
 			set_sbt_params(node)
-		"PlayingPiece":
-			# STOP THIS METHOD IS THE NODE EXTENDS FROM TILE MAP
-			if node is TileMap:
-				return
-			else:
-				set_pp_params(node, sp)
 	
 	if node.get_child_count():
 		for c in node.get_children():
