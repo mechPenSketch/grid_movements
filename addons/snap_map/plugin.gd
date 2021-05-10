@@ -47,6 +47,7 @@ func _enter_tree():
 	var base_control = get_editor_interface().get_base_control()
 	var children = recursive_get_children(base_control)
 	
+	#	ALONG THE WAY, FIND SCENE TREE INTERFACE
 	var potential_trees = []
 	
 	for child in children:
@@ -133,19 +134,30 @@ func _gui_scenetree_input(e):
 
 func _on_node_added(n):
 	
-	if !snaps_not_loaded():
-		# SET SNAP SETTINGS ONTO ADDED NODE
-		if n is SnapboundTiles:
+	if n is SnapboundTiles:
+		if snaps_not_loaded():
+			# SET SNAP SETTINGS BASED ON GIVEN SNAPBOUND TILES
+			
+			#	OFFSET
+			var children_offset = n.get_children_offset()
+			snap_spinbox[0].set_value(children_offset.x)
+			snap_spinbox[1].set_value(children_offset.y)
+			
+			#	SNAP STEP
+			var cell_size = n.get_cell_size()
+			snap_spinbox[2].set_value(cell_size.x)
+			snap_spinbox[3].set_value(cell_size.y)
+			
+			set_snap_settings(cell_size, children_offset)
+		else:
+			# APPLY SNAP SETTINGS ONTO ADDED NODE
 			set_sbt_params(n)
-	
-	if n is PlayingPiece:
-		if ui_scenetree.get_root():
-			print(ui_scenetree.get_root())
+		
+		n.connect("settings_changed", n, "_settings_changed")
 
 func _on_param_changed(param, val):
 	match param:
 		"cell_size":
-			print(val)
 			snap_spinbox[2].set_value(val.x)
 			snap_spinbox[3].set_value(val.y)
 			snap_dialog_btn.emit_signal("pressed")
@@ -218,9 +230,12 @@ func recursive_get_children(node):
 
 func set_sbt_params(node):
 	# IF NODE IS SNAPBOUND TILES
-	if node is SnapboundTiles:
+	if node is SnapboundTiles and node != current_node:
 		# SET ITS CELL SIZE BASED ON NEW SETTINGS
-		node.cell_size = snap_grid_step
+		node.plugset_cell_size(snap_grid_step)
+		
+		# THEN CHILDREN OFFSET
+		node.plugset_children_offset(snap_grid_offset)
 
 func set_pp_params(node, sp):
 	# IF NODE IS PLAYING PIECE

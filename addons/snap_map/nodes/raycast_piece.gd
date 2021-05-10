@@ -31,6 +31,6 @@ func set_direction_ratio(val):
 func plugset_direction(snap_grid_step):
 	var half_step = snap_grid_step / 2
 	var net_direction = half_step * get_direction_ratio()
-	set_position(net_direction)
-	set_cast_to(net_direction)
+	position = net_direction
+	cast_to = net_direction
 	property_list_changed_notify()
