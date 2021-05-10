@@ -145,6 +145,7 @@ func _on_node_added(n):
 func _on_param_changed(param, val):
 	match param:
 		"cell_size":
+			print(val)
 			snap_spinbox[2].set_value(val.x)
 			snap_spinbox[3].set_value(val.y)
 			snap_dialog_btn.emit_signal("pressed")
