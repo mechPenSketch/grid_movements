@@ -4,7 +4,7 @@ extends RayCast2D
 class_name RayCastPiece, "raycast_piece.svg"
 
 # INDIVIDUAL PARAMETERS
-export(Vector2) var direction_ratio setget set_direction_ratio
+export(Vector2) var direction_ratio setget ,get_direction_ratio
 
 # SETTING PARAM CHANGES
 signal param_changed
@@ -16,20 +16,17 @@ func get_class():
 
 func is_class(s)->bool:
 	return s == get_class() or .is_class(s)
+	
+# PROPERTIES DATA
+
+func get_direction_ratio():
+	return direction_ratio
 
 # SETTING PROPERTIES THROUGH INSPECTOR
 
-func set_direction_ratio(v2):
-	"""
-	var prev_dr = direction_ratio
-	direction_ratio = v2
-	
-	if prev_dr.x != direction_ratio.x:
-		plugset_cell_width(cell_width)
-		
-	if prev_dr.y != direction_ratio.y:
-		plugset_cell_height(cell_height)
-		
+func plugset_direction(snap_grid_step):
+	var half_step = snap_grid_step / 2
+	var net_direction = half_step * get_direction_ratio()
+	set_position(net_direction)
+	set_cast_to(net_direction)
 	property_list_changed_notify()
-	"""
-	pass

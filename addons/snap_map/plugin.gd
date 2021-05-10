@@ -146,11 +146,13 @@ func _on_param_changed(param, val):
 		"cell_size":
 			snap_spinbox[2].set_value(val.x)
 			snap_spinbox[3].set_value(val.y)
+			snap_dialog_btn.emit_signal("pressed")
 		"children_offset":
 			snap_spinbox[0].set_value(val.x)
 			snap_spinbox[1].set_value(val.y)
-			
-	snap_dialog_btn.emit_signal("pressed")
+			snap_dialog_btn.emit_signal("pressed")
+		"direction_ratio":
+			current_node.plugset_direction(snap_grid_step)
 
 func _on_scene_changed(scene_root):
 	
@@ -176,6 +178,9 @@ func edit(node):
 		
 		# CONNECT SELECTED NODE
 		node.connect("param_changed", self, "_on_param_changed")
+		
+	# SET CURRENT NODE
+	current_node = node
 
 func get_first_snapbound_tiles(node):
 	if node is SnapboundTiles:
@@ -198,7 +203,7 @@ func handles(node):
 		current_node = null
 	
 	# IF NODE IS AFFECTED CLASS
-	return node is SnapboundTiles
+	return node is SnapboundTiles or node is RayCastPiece
 
 func recursive_get_children(node):
 	var children = node.get_children()
@@ -217,6 +222,42 @@ func set_node_params(node):
 
 func set_node_params_then_children(node):
 	set_node_params(node)
+
+func set_pp_params(node, sp):
+	# IF NODE IS PLAYING PIECE
+	if node is PlayingPiece:
+		# REPOSITIONING
+		#	GET GRID POSITION FROM STARTING PARENT
+		var wtm = sp.world_to_map(node.get_global_position())
+		
+		#	THEN POSITION WITHOUT OFFSET
+		var mtw = sp.map_to_world(wtm)
+		
+		#	FINALLY, SET POSITION BASED ON NEW OFFSET
+		node.set_position(mtw + sp.get_children_offset())
+		
+		# SETTING ITS CHILDREN COMPONENETS
+		for c in node.get_children():
+			if c is RayCastPiece:
+				c.plugset_direction(snap_grid_step)
+			elif c is ColShapePieceEx:
+				pass
+
+func set_node_params_then_children(node, cn, sp=null):
+	# INPUTS:
+	#	NODE
+	#	CLASS NAME
+	#	STARTING PARENT (DEFAULT: NULL)
+	
+	match cn:
+		"SnapboundTiles":
+			set_sbt_params(node)
+		"PlayingPiece":
+			# STOP THIS METHOD IS THE NODE EXTENDS FROM TILE MAP
+			if node is TileMap:
+				return
+			else:
+				set_pp_params(node, sp)
 	
 	if node.get_child_count():
 		for c in node.get_children():
