@@ -49,7 +49,7 @@ func reposition():
 	
 	# SETTING ITS CHILDREN COMPONENETS
 	for c in get_children():
-		if c is RayCastPiece:
-			c.plugset_direction(parent_tilemap.cell_size())
-		elif c is ColShapePieceEx:
+		if c.is_class("RayCastPiece"):
+			c.set_direction(parent_tilemap.get_cell_size())
+		elif c.is_class("ColShapePieceEx"):
 			pass

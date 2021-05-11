@@ -140,13 +140,6 @@ func _on_param_changed(param, val):
 			snap_spinbox[0].set_value(val.x)
 			snap_spinbox[1].set_value(val.y)
 			snap_dialog_btn.emit_signal("pressed")
-		"direction_ratio":
-			var parent = current_node.get_parent()
-			if parent and parent is PlayingPiece:
-				var parent_tilemap = get_parent_tilemap(parent)
-				
-				if parent_tilemap:
-					current_node.plugset_direction(parent_tilemap.get_cell_size())
 
 func _on_scene_changed(scene_root):
 	
@@ -160,6 +153,7 @@ func _on_scene_changed(scene_root):
 
 func _on_snap_settings_confirmed():
 	set_sbt_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
+	set_snap_settings(Vector2(snap_spinbox[2].get_value(), snap_spinbox[3].get_value()), Vector2(snap_spinbox[0].get_value(), snap_spinbox[1].get_value()))
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -194,7 +188,7 @@ func handles(node):
 		current_node = null
 	
 	# IF NODE IS AFFECTED CLASS
-	return node is SnapboundTiles or node is RayCastPiece
+	return node is SnapboundTiles
 
 func recursive_get_children(node):
 	var children = node.get_children()
