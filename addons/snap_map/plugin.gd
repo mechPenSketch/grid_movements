@@ -88,12 +88,9 @@ func _gui_scenetree_input(e):
 				var node = get_tree().get_edited_scene_root().get_node(node_path)
 				if node is PlayingPiece:
 					
-					# FIND PARENT TILEMAP
-					var parent_tilemap = get_parent_tilemap(node)
-					
-					if parent_tilemap:
-						# GET PLAYING PIECE'S GRID POSITION FROM PARENT TILEMAP
-						var grid_pos = parent_tilemap.world_to_map(node.get_global_position())
+					# FIND GRID POSITION
+					var grid_pos = node.grid_position
+					if grid_pos != null:
 						var tooltip_ln_grid_pos = "Grid Pos: " + String(grid_pos) + "\n"
 						
 						# STORE ORIGINAL TOOLTIP MESSAGE
