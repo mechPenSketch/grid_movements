@@ -16,8 +16,6 @@ var snap_dialog_btn
 var ui_scenetree
 var base_tooltips = {}
 
-signal input_event
-
 func _enter_tree():
 	
 	# DEFINE SNAP SETTINGS

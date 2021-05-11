@@ -14,9 +14,6 @@ func _notification(what):
 			if !input_event.is_pressed():
 				pass
 
-func _plugin_input(e):
-	input_event = e
-
 # CLASS DATA
 
 func get_class():
