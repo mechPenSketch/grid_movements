@@ -39,6 +39,17 @@ func _parent_tilemap_settings_changed():
 	reposition()
 
 func reposition():
+	# SET POSITION FROM GRID
 	var mtw = parent_tilemap.map_to_world(grid_position)
+	
+	# THEN APPLY OFFSET
 	var final_pos = mtw + parent_tilemap.children_offset
+	
 	set_global_position(final_pos)
+	
+	# SETTING ITS CHILDREN COMPONENETS
+	for c in get_children():
+		if c is RayCastPiece:
+			c.plugset_direction(parent_tilemap.cell_size())
+		elif c is ColShapePieceEx:
+			pass

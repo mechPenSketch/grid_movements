@@ -156,10 +156,10 @@ func _on_scene_changed(scene_root):
 	# IF SNAP SETTINGS HAVE BEEN CALLED EARLIER
 	if !snaps_not_loaded():
 		# KEEP PARAMETERS UP-TO-DATE
-		set_node_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
+		set_sbt_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
 
 func _on_snap_settings_confirmed():
-	set_node_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
+	set_sbt_params_then_children(get_tree().get_edited_scene_root(), "SnapboundTiles")
 
 # IF THIS PLUGIN handles(the_selected_node),
 func edit(node):
@@ -216,22 +216,7 @@ func set_sbt_params(node):
 			# THEN CHILDREN OFFSET
 			node.plugset_children_offset(snap_grid_offset)
 
-func set_pp_params(node, grid, sp):
-	# REPOSITIONING
-	#	SET POSITION FROM GRID
-	var mtw = sp.map_to_world(grid)
-	
-	#	THEN APPLY OFFSET
-	node.set_position(mtw + sp.get_children_offset())
-	
-	# SETTING ITS CHILDREN COMPONENETS
-	for c in node.get_children():
-		if c is RayCastPiece:
-			c.plugset_direction(snap_grid_step)
-		elif c is ColShapePieceEx:
-			pass
-
-func set_node_params_then_children(node, cn, sp=null):
+func set_sbt_params_then_children(node, cn, sp=null):
 	# INPUTS:
 	#	NODE
 	#	CLASS NAME
@@ -243,7 +228,7 @@ func set_node_params_then_children(node, cn, sp=null):
 	
 	if node.get_child_count():
 		for c in node.get_children():
-			set_node_params_then_children(c, cn, sp)
+			set_sbt_params_then_children(c, cn, sp)
 
 func set_snap_settings(step, offset = Vector2(0, 0)):
 	# OFFSET
