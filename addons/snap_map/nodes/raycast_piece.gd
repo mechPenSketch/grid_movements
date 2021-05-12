@@ -23,17 +23,18 @@ func set_direction_ratio(val):
 	# SET PROPERTY
 	direction_ratio = val
 	
-	# GET PARENT
-	var parent = get_parent()
-	# IF THESE CONDITIONS ARE MET
-	#	- PARENT IS NOT NULL
-	#	- PARENT IS PLAYING PIECE
-	#	- THERE IS GRANDPARENT TILEMAP
-	if parent and parent.is_class("PlayingPiece") and parent.parent_tilemap:
-		set_direction(parent.parent_tilemap.get_cell_size())
-	else:
-		position = Vector2()
-		cast_to = direction_ratio * 64
+	if Engine.editor_hint:
+		# GET PARENT
+		var parent = get_parent()
+		# IF THESE CONDITIONS ARE MET
+		#	- PARENT IS NOT NULL
+		#	- PARENT IS PLAYING PIECE
+		#	- THERE IS GRANDPARENT TILEMAP
+		if parent and parent.is_class("PlayingPiece") and parent.parent_tilemap:
+			set_direction(parent.parent_tilemap.get_cell_size())
+		else:
+			position = Vector2()
+			cast_to = direction_ratio * 64
 
 # SETTING PROPERTIES THROUGH INSPECTOR
 

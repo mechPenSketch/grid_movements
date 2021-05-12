@@ -16,7 +16,7 @@ func is_class(s)->bool:
 
 # PROPERTY METHODS
 
-func set_parent_tilemap(n):	
+func set_parent_tilemap(n):
 	# IF ANY, CUT TIES TO FORMER PARENT TILEMAP
 	if parent_tilemap:
 		parent_tilemap.disconnect("settings_changed", self, "_parent_tilemap_settings_changed")
@@ -34,6 +34,10 @@ func set_parent_tilemap(n):
 		grid_position = null
 
 # METHODS
+
+func _ready():
+	if !Engine.editor_hint:
+		set_parent_tilemap(get_parent())
 
 func _parent_tilemap_settings_changed():
 	reposition()
