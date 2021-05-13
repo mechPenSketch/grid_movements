@@ -39,8 +39,17 @@ func set_direction_ratio(val):
 # SETTING PROPERTIES THROUGH INSPECTOR
 
 func set_direction(snap_grid_step):
-	var half_step = snap_grid_step / 2
-	var net_direction = half_step * get_direction_ratio()
-	position = net_direction
-	cast_to = net_direction
+	# STARTING POS
+	var base = Vector2()
+	for w in 2:
+		if direction_ratio[w] < 0:
+			base[w] = -1
+		elif direction_ratio[w] > 0:
+			base[w] = 1
+	position = base * snap_grid_step / 2
+	
+	# FINAL POS
+	var final_multiplier = get_direction_ratio() - base * Vector2(0.5, 0.5)
+	cast_to = snap_grid_step * final_multiplier
+	
 	property_list_changed_notify()
